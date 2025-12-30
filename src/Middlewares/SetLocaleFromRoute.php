@@ -9,27 +9,37 @@ use Illuminate\Http\Request;
 use Josemontano1996\LaravelLocalizationSuite\Contracts\LocalizationServiceContract;
 use Symfony\Component\HttpFoundation\Response;
 
-class SetLocaleFromRoute
+final class SetLocaleFromRoute
 {
     public function __construct(
-        protected LocalizationServiceContract $service
+        private readonly LocalizationServiceContract $service
     ) {}
 
-    /**
-     * Handle an incoming request.
-     */
     public function handle(Request $request, Closure $next): Response
     {
-        // 1. Get locale from URL parameter {locale}
-        $locale = $request->route($this->service->getRouteKey());
+        $key = $this->service->getRouteKey();
+        $locale = $request->route($key);
+        $supported = $this->service->getSupportedLocales();
 
-        // 2. If no locale in URL, detect via the service and request macros
-        if (! $locale) {
-            $supported = $this->service->getSupportedLocales();
-            $locale = $request->preferredLocale($supported) ?? $this->service->getConfigLocale();
+        // 1. If the URL has an UNSUPPORTED locale
+        if (! empty($locale) && ! \in_array($locale, $supported)) {
+            // Find the best valid language
+            $fallback = $request->preferredLocale($supported) ?? $this->service->getConfigLocale();
+
+            // CRITICAL: Set the service state FIRST
+            $this->service->setCurrentLocale((string) $fallback);
+
+            // NOW the macro will use the correct locale for the URL
+            return redirect()->localized()->route(
+                $request->route()->getName() ?? 'home',
+                $request->route()->parameters()
+            );
         }
 
-        // 3. Set the locale in the service
+        // 2. If the URL has NO locale (or a valid one)
+        if (empty($locale)) {
+            $locale = $request->preferredLocale($supported) ?? $this->service->getConfigLocale();
+        }
 
         $this->service->setCurrentLocale((string) $locale);
 
