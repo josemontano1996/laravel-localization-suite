@@ -1,0 +1,29 @@
+{
+    "name": "josemontano1996/laravel-localization-suite",
+    "autoload": {
+        "psr-4": {
+            "Josemontano1996\\LaravelLocalizationSuite\\": "src/"
+        },
+        "files": [
+            "src/helpers.php"
+        ]
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Tests\\": "tests/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Jose Manuel Montano Mengual",
+            "email": "jm3develop@gmail.com"
+        }
+    ],
+    "require": {
+        "php": "^8.4",
+        "illuminate/support": "^12.0",
+        "illuminate/http": "^12.0",
+        "illuminate/routing": "^12.0",
+        "illuminate/view": "^12.0"
+    }
+}
