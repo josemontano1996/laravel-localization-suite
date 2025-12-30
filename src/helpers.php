@@ -3,7 +3,6 @@
 declare(strict_types=1);
 
 use Josemontano1996\LaravelLocalizationSuite\Contracts\LocalizationServiceContract;
-use Josemontano1996\LaravelLocalizationSuite\Facades\Localization;
 
 if (! function_exists('localization')) {
     /**
@@ -11,6 +10,7 @@ if (! function_exists('localization')) {
      */
     function localization(): LocalizationServiceContract
     {
+        // This is safe because it pulls the 'scoped' instance for the current request/coroutine
         return app(LocalizationServiceContract::class);
     }
 }
@@ -19,9 +19,13 @@ if (! function_exists('t')) {
     /**
      * Shortcut for context-aware translation.
      */
-    function t(string $key, array $replace = [], ?string $locale = null): string
+    function t(?string $key = null, array $replace = [], ?string $locale = null): string|LocalizationServiceContract
     {
-        return Localization::t($key, $replace, $locale);
+        if ($key == null) {
+            return localization();
+        }
+
+        return localization()->t($key, $replace, $locale);
     }
 }
 
@@ -31,7 +35,7 @@ if (! function_exists('tchoice')) {
      */
     function tchoice(string $key, int|float $number, array $replace = [], ?string $locale = null): string
     {
-        return Localization::tchoice($key, $number, $replace, $locale);
+        return localization()->tchoice($key, $number, $replace, $locale);
     }
 }
 
@@ -41,6 +45,6 @@ if (! function_exists('l_format_number')) {
      */
     function l_format_number($value, int $style, array $options = []): string
     {
-        return Localization::formatNumber($value, $style, $options);
+        return localization()->formatNumber($value, $style, $options);
     }
 }

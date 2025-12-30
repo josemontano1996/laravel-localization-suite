@@ -6,29 +6,32 @@ namespace Josemontano1996\LaravelLocalizationSuite\Http\Middleware;
 
 use Closure;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\URL;
-use Josemontano1996\LaravelLocalizationSuite\Facades\Localization;
+use Josemontano1996\LaravelLocalizationSuite\Contracts\LocalizationServiceContract;
 use Symfony\Component\HttpFoundation\Response;
 
 class SetLocale
 {
+    public function __construct(
+        protected LocalizationServiceContract $service
+    ) {}
+
     /**
      * Handle an incoming request.
      */
     public function handle(Request $request, Closure $next): Response
     {
-        // 1. Check if the route has a {locale} parameter (from your Route::localized macro)
+        // 1. Get locale from URL parameter {locale}
         $locale = $request->route('locale');
 
-        // 2. If no locale in URL, use your smart 'preferredLocale' macro 
-        // to check browser headers (Accept-Language)
+        // 2. If no locale in URL, detect via the service and request macros
         if (! $locale) {
-            $supported = Localization::getSupportedLocales();
-            $locale = $request->preferredLocale($supported) ?? Localization::getConfigLocale();
+            $supported = $this->service->getSupportedLocales();
+            $locale = $request->preferredLocale($supported) ?? $this->service->getConfigLocale();
         }
 
-        // 3. Set the locale in the service (and the driver: session, cookie, etc.)
-        Localization::setCurrentLocale($locale);
+        // 3. Set the locale in the service
+        
+        $this->service->setCurrentLocale((string) $locale);
 
         return $next($request);
     }
