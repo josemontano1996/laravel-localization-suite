@@ -77,6 +77,10 @@ class LocalizationServiceProvider extends ServiceProvider
         $router = $this->app->make(\Illuminate\Routing\Router::class);
         $router->aliasMiddleware('localization.headers', \Josemontano1996\LaravelLocalizationSuite\Http\Middleware\SetLocalizedHeaders::class);
         $router->aliasMiddleware('localization.from_route', \Josemontano1996\LaravelLocalizationSuite\Http\Middleware\SetLocaleFromRoute::class);
+        $router->middlewareGroup('localization', [
+            'localization.from_route',
+            'localization.headers',
+        ]);
     }
 
     /**
