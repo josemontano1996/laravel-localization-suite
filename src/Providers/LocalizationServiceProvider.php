@@ -64,6 +64,10 @@ class LocalizationServiceProvider extends ServiceProvider
 
         $loader = AliasLoader::getInstance();
         $loader->alias('Localization', \Josemontano1996\LaravelLocalizationSuite\Facades\Localization::class);
+
+        $this->publishes([
+            __DIR__.'/../config/localization.php' => config_path('localization.php'),
+        ], 'localization-config');
     }
 
     /**
