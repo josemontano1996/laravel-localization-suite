@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Josemontano1996\LaravelLocalizationSuite\Services;
 
 use BackedEnum;
+use Illuminate\Routing\UrlGenerator;
 use Illuminate\Support\Facades\URL;
 use Josemontano1996\LaravelLocalizationSuite\Contracts\LocalizationDriverContract;
 use Josemontano1996\LaravelLocalizationSuite\Contracts\LocalizationServiceContract;
@@ -14,7 +15,10 @@ final class LocalizationService implements LocalizationServiceContract
 {
     use ResolvesConfigLocale;
 
-    public function __construct(private LocalizationDriverContract $localizationDriver) {}
+    public function __construct(
+        private LocalizationDriverContract $localizationDriver,
+        private UrlGenerator $url // Inject this instead of using the Facade
+    ) {}
 
     public function getCurrentLocale(): string
     {
@@ -31,6 +35,6 @@ final class LocalizationService implements LocalizationServiceContract
         $parameters = \is_array($parameters) ? $parameters : [$parameters];
         $parameters = ['locale' => $this->getCurrentLocale(), ...$parameters];
 
-        return URL::route($name, $parameters, $absolute);
+        return $this->url->route($name, $parameters, $absolute);
     }
 }

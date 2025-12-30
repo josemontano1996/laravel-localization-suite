@@ -4,7 +4,12 @@ declare(strict_types=1);
 
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\ServiceProvider;
+use Josemontano1996\LaravelLocalizationSuite\Contracts\LocalizationDriverContract;
 use Josemontano1996\LaravelLocalizationSuite\Contracts\LocalizationServiceContract;
+use Josemontano1996\LaravelLocalizationSuite\Drivers\Localization\ContextDriver;
+use Josemontano1996\LaravelLocalizationSuite\Drivers\Localization\NativeDriver;
+use Josemontano1996\LaravelLocalizationSuite\Drivers\Localization\OpenSwooleDriver;
+use Josemontano1996\LaravelLocalizationSuite\Drivers\Localization\SwooleDriver;
 use Josemontano1996\LaravelLocalizationSuite\Registrars\RegisterBladeDirectives;
 use Josemontano1996\LaravelLocalizationSuite\Registrars\RegisterMacros;
 use Josemontano1996\LaravelLocalizationSuite\Services\LocalizationService;
@@ -13,7 +18,35 @@ class LocalizationServiceProvider extends ServiceProvider
 {
     public function register(): void
     {
-        $this->app->scoped(LocalizationServiceContract::class, LocalizationService::class);
+
+        $this->app->scoped(LocalizationDriverContract::class, function ($app) {
+            // 1. Get the string "key" from the config (default to 'native')
+            $driverKey = config('localization.driver', 'native');
+
+            // 2. Map the string to the actual class
+            $driverClass = match ($driverKey) {
+                'native' => NativeDriver::class,
+                'context' => ContextDriver::class,
+                'swoole' => SwooleDriver::class,
+                'openswoole' => OpenSwooleDriver::class,
+                default => $driverKey, // Allow users to pass a custom FQCN if they want
+            };
+
+            $driver = $app->make($driverClass);
+
+            if (! $driver instanceof LocalizationDriverContract) {
+                throw new \RuntimeException('The localization driver must implement LocalizationDriverContract.');
+            }
+
+            return $driver;
+        });
+
+        $this->app->scoped(LocalizationServiceContract::class, function ($app) {
+            return new LocalizationService(
+                $app->make(LocalizationDriverContract::class),
+                $app->make(\Illuminate\Routing\UrlGenerator::class)
+            );
+        });
     }
 
     /**
