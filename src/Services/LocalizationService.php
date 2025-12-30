@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace Josemontano1996\LaravelLocalizationSuite\Services;
 
 use BackedEnum;
+use Carbon\Carbon;
+use Carbon\CarbonImmutable;
 use Illuminate\Routing\UrlGenerator;
 use Josemontano1996\LaravelLocalizationSuite\Contracts\LocalizationDriverContract;
 use Josemontano1996\LaravelLocalizationSuite\Contracts\LocalizationServiceContract;
@@ -21,12 +23,16 @@ final class LocalizationService implements LocalizationServiceContract
 
     public function getCurrentLocale(): string
     {
-        return $this->localizationDriver->getCurrentLocale();
+        return $this->localizationDriver->getCurrentLocale() ?? $this->getConfigLocale();
     }
 
     public function setCurrentLocale(string $locale): void
     {
         $this->localizationDriver->setCurrentLocale($locale);
+
+        if ($this->localizationDriver->isSafeToMutateGlobalState()) {
+            $this->syncGlobalState($locale);
+        }
     }
 
     public function route(BackedEnum|string $name, mixed $parameters = [], bool $absolute = true): string
@@ -62,5 +68,16 @@ final class LocalizationService implements LocalizationServiceContract
         }
 
         return $fmt->format((float) $value) ?: (string) $value;
+    }
+
+    private function syncGlobalState(string $locale): void
+    {
+        $this->url->defaults(['locale' => $locale]);
+
+        // Global Carbon State
+        if (class_exists(Carbon::class)) {
+            Carbon::setLocale($locale);
+            CarbonImmutable::setLocale($locale);
+        }
     }
 }

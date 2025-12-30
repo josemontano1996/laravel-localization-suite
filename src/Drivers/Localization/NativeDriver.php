@@ -4,28 +4,21 @@ declare(strict_types=1);
 
 namespace Josemontano1996\LaravelLocalizationSuite\Drivers\Localization;
 
-use Exception;
 use Josemontano1996\LaravelLocalizationSuite\Contracts\LocalizationDriverContract;
+use Josemontano1996\LaravelLocalizationSuite\Traits\MutatesGlobalState;
 
 class NativeDriver implements LocalizationDriverContract
 {
-    public function __construct()
-    {
-        throw new Exception('Not implemented');
-    }
 
+    use MutatesGlobalState;
     public function getCurrentLocale(): string
     {
-        throw new Exception('Not implemented');
+        return (string) app()->getLocale();
     }
 
-    /**
-     * Set the current locale for the request.
-     *
-     * @param  string  $locale  Locale code to set (case-sensitive)
-     */
     public function setCurrentLocale(string $locale): void
     {
-        throw new Exception('Not implemented');
+        app()->setLocale($locale);
     }
+
 }

@@ -4,28 +4,23 @@ declare(strict_types=1);
 
 namespace Josemontano1996\LaravelLocalizationSuite\Drivers\Localization;
 
-use Exception;
+use Illuminate\Support\Facades\Context;
 use Josemontano1996\LaravelLocalizationSuite\Contracts\LocalizationDriverContract;
+use Josemontano1996\LaravelLocalizationSuite\Traits\IsContextIsolated;
 
 class ContextDriver implements LocalizationDriverContract
 {
-    public function __construct()
-    {
-        throw new Exception('Not implemented');
-    }
+    use IsContextIsolated;
+
+    private const CONTEXT_KEY = 'localization.locale';
 
     public function getCurrentLocale(): string
     {
-        throw new Exception('Not implemented');
+        return Context::get(self::CONTEXT_KEY);
     }
 
-    /**
-     * Set the current locale for the request.
-     *
-     * @param  string  $locale  Locale code to set (case-sensitive)
-     */
     public function setCurrentLocale(string $locale): void
     {
-        throw new Exception('Not implemented');
+        Context::add(self::CONTEXT_KEY, $locale);
     }
 }

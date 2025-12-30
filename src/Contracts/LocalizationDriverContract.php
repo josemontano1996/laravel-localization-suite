@@ -11,7 +11,7 @@ interface LocalizationDriverContract
      *
      * @return string The current locale
      */
-    public function getCurrentLocale(): string;
+    public function getCurrentLocale(): ?string;
 
     /**
      * Set the current locale for the request.
@@ -19,4 +19,6 @@ interface LocalizationDriverContract
      * @param  string  $locale  Locale code to set (case-sensitive)
      */
     public function setCurrentLocale(string $locale): void;
+
+    public function isSafeToMutateGlobalState(): bool;
 }
