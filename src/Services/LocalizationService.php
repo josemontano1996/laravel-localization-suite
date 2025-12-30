@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Josemontano1996\LaravelLocalizationSuite\Services;
 
 use BackedEnum;
+use Illuminate\Support\Facades\URL;
 use Josemontano1996\LaravelLocalizationSuite\Contracts\LocalizationDriverContract;
 use Josemontano1996\LaravelLocalizationSuite\Contracts\LocalizationServiceContract;
 use Josemontano1996\LaravelLocalizationSuite\Traits\ResolvesConfigLocale;
@@ -27,6 +28,9 @@ final class LocalizationService implements LocalizationServiceContract
 
     public function route(BackedEnum|string $name, mixed $parameters = [], bool $absolute = true): string
     {
-        return '';
+        $parameters = \is_array($parameters) ? $parameters : [$parameters];
+        $parameters = ['locale' => $this->getCurrentLocale(), ...$parameters];
+
+        return URL::route($name, $parameters, $absolute);
     }
 }

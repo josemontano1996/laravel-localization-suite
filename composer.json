@@ -5,7 +5,8 @@
             "Josemontano1996\\LaravelLocalizationSuite\\": "src/"
         },
         "files": [
-            "src/helpers.php"
+            "src/helpers.php",
+            "src/Support/phpdocs.php"
         ]
     },
     "autoload-dev": {
