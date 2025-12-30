@@ -3,8 +3,9 @@
 namespace Josemontano1996\LaravelLocalizationSuite\Contracts;
 
 use BackedEnum;
+use Josemontano1996\LaravelLocalizationSuite\Exceptions\LocaleConfigException;
 
-interface LocalizationService
+interface LocalizationServiceContract
 {
     /**
      * Get the current locale for the request.
@@ -34,12 +35,20 @@ interface LocalizationService
     public function route(BackedEnum|string $name, mixed $parameters = [], bool $absolute = true): string;
 
     /**
-     * Get the list of supported locales from configuration.
+     * Get the application's config locale, falling back to the default fallback locale if not set.
      *
-     * Retrieves the supported locales from app.supported_locales configuration.
-     * Returns an empty array if not configured.
+     * @return string The resolved locale string.
      *
-     * @return array<int, string> Array of supported locale codes
+     * @throws LocaleConfigException If the locale is not provided and fallback locale is not set in config.
+     */
+    public function getConfigLocale(): string;
+
+    /**
+     * Get the supported locales from configuration, or fallback to defaults.
+     *
+     * @return array<string> List of supported locale strings.
+     *
+     * @throws LocaleConfigException If no supported locales can be determined.
      */
     public function getSupportedLocales(): array;
 }

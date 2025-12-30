@@ -2,7 +2,7 @@
 
 namespace Josemontano1996\LaravelLocalizationSuite\Contracts;
 
-interface LocalizationDriver
+interface LocalizationDriverContract
 {
     /**
      * Get the current locale for the request.
