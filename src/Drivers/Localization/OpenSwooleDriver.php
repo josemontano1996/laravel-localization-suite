@@ -4,31 +4,61 @@ declare(strict_types=1);
 
 namespace Josemontano1996\LaravelLocalizationSuite\Drivers\Localization;
 
-use Exception;
 use Josemontano1996\LaravelLocalizationSuite\Contracts\LocalizationDriverContract;
+use Josemontano1996\LaravelLocalizationSuite\Exceptions\OpenSwooleDriverException;
 use Josemontano1996\LaravelLocalizationSuite\Traits\IsContextIsolated;
+use OpenSwoole\Coroutine;
 
-class OpenSwooleDriver implements LocalizationDriverContract
+final class OpenSwooleDriver implements LocalizationDriverContract
 {
     use IsContextIsolated;
 
+    private const string CONTEXT_KEY = 'localization_locale';
+
+    /**
+     * Create a new OpenSwooleDriver instance.
+     *
+     * @throws OpenSwooleDriverException
+     */
     public function __construct()
     {
-        throw new Exception('Not implemented');
-    }
+        if (! extension_loaded('openswoole')) {
+            throw OpenSwooleDriverException::missingExtension();
+        }
 
-    public function getCurrentLocale(): string
-    {
-        throw new Exception('Not implemented');
+        if (! class_exists(Coroutine::class)) {
+            throw OpenSwooleDriverException::missingCoroutineSupport();
+        }
     }
 
     /**
-     * Set the current locale for the request.
-     *
-     * @param  string  $locale  Locale code to set (case-sensitive)
+     * Get the current locale from the OpenSwoole Coroutine Context.
+     */
+    public function getCurrentLocale(): ?string
+    {
+        // OpenSwoole uses getCid() to identify the current coroutine
+        $cid = Coroutine::getCid();
+
+        // CID is -1 if we are not inside a coroutine (e.g., CLI/Task worker)
+        if ($cid <= 0) {
+            return null;
+        }
+
+        $context = Coroutine::getContext($cid);
+
+        return $context[self::CONTEXT_KEY] ?? null;
+    }
+
+    /**
+     * Set the current locale for the specific OpenSwoole Coroutine.
      */
     public function setCurrentLocale(string $locale): void
     {
-        throw new Exception('Not implemented');
+        $cid = Coroutine::getCid();
+
+        if ($cid > 0) {
+            $context = Coroutine::getContext($cid);
+            $context[self::CONTEXT_KEY] = $locale;
+        }
     }
 }
