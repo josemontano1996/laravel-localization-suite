@@ -33,6 +33,16 @@
         "orchestra/testbench": "^10.8",
         "phpstan/phpstan": "^2.1"
     },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Josemontano1996\\LaravelLocalizationSuite\\LocalizationServiceProvider"
+            ],
+            "aliases": {
+                "Localization": "Josemontano1996\\LaravelLocalizationSuite\\Facades\\Localization"
+            }
+        }
+    },
     "scripts": {
         "test": "pest",
         "lint": "pint --parallel",

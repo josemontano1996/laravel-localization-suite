@@ -24,19 +24,6 @@ interface LocalizationServiceContract
     public function setCurrentLocale(string $locale): void;
 
     /**
-     * Generate a localized route URL.
-     *
-     * Creates a URL for the given route name, automatically injecting the current
-     * locale into the route parameters. Supports BackedEnum route names.
-     *
-     * @param  BackedEnum|string  $name  Route name or BackedEnum case
-     * @param  mixed  $parameters  Route parameters (array or single value)
-     * @param  bool  $absolute  Whether to generate absolute URL (default: true)
-     * @return string The generated URL with locale injected
-     */
-    public function route(BackedEnum|string $name, mixed $parameters = [], bool $absolute = true): string;
-
-    /**
      * Get the application's config locale, falling back to the default fallback locale if not set.
      *
      * @return string The resolved locale string.
@@ -53,4 +40,23 @@ interface LocalizationServiceContract
      * @throws LocaleConfigException If no supported locales can be determined.
      */
     public function getSupportedLocales(): array;
+
+    /**
+     * Generate a localized route URL.
+     *
+     * Creates a URL for the given route name, automatically injecting the current
+     * locale into the route parameters. Supports BackedEnum route names.
+     *
+     * @param  BackedEnum|string  $name  Route name or BackedEnum case
+     * @param  mixed  $parameters  Route parameters (array or single value)
+     * @param  bool  $absolute  Whether to generate absolute URL (default: true)
+     * @return string The generated URL with locale injected
+     */
+    public function route(BackedEnum|string $name, mixed $parameters = [], bool $absolute = true): string;
+
+    public function t(string $key, array $replace = [], ?string $locale = null): string;
+
+    public function tchoice(string $key, int|float $number, array $replace = [], ?string $locale = null): string;
+
+    public function formatNumber($value, int $style, array $options = []): string;
 }

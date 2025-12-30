@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 
+use Illuminate\Foundation\AliasLoader;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\ServiceProvider;
 use Josemontano1996\LaravelLocalizationSuite\Contracts\LocalizationDriverContract;
@@ -60,6 +61,9 @@ class LocalizationServiceProvider extends ServiceProvider
         RegisterBladeDirectives::register();
         RegisterMacros::register();
         $this->registerValidationLocalization();
+
+        $loader = AliasLoader::getInstance();
+        $loader->alias('Localization', \Josemontano1996\LaravelLocalizationSuite\Facades\Localization::class);
     }
 
     /**
