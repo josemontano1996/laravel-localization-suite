@@ -8,36 +8,35 @@ use Illuminate\Http\Request;
 use Illuminate\Routing\Redirector;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\URL;
-use Josemontano1996\LaravelLocalizationSuite\Facades\Localization;
+use Josemontano1996\LaravelLocalizationSuite\Contracts\LocalizationServiceContract;
 use Josemontano1996\LaravelLocalizationSuite\Services\RedirectorService;
 
 class RegisterMacros
 {
     public static function register(): void
     {
-        $facade = '\\'.Localization::class;
+        $contract = LocalizationServiceContract::class;
 
         // 1. Redirector macro
-        Redirector::macro('localized', function () use ($facade) {
+        Redirector::macro('localized', function () use ($contract) {
             /** @var \Illuminate\Routing\Redirector $this */
             return new RedirectorService(
                 $this,
-                $facade::getFacadeRoot()
+                app($contract) // Resolves the scoped instance for the current request
             );
         });
 
         // 2. Request macros
-        Request::macro('locale', function () use ($facade) {
-            return $facade::getCurrentLocale();
+        Request::macro('locale', function () use ($contract) {
+            return app($contract)->getCurrentLocale();
         });
 
         Request::macro('acceptedLocales', function (): array {
             return array_flip($this->getLanguages());
         });
 
-        Request::macro('preferredLocale', function (array $supported = []): ?string {
+        Request::macro('preferredLocale', function (array $supported = []) {
             $accepted = $this->acceptedLocales();
-
             if (empty($accepted)) {
                 return null;
             }
@@ -53,13 +52,9 @@ class RegisterMacros
 
             foreach ($accepted as $locale => $quality) {
                 $localeLower = strtolower((string) $locale);
-
-                // 1. Try exact match (case-insensitive)
                 if (isset($normalizedSupported[$localeLower])) {
                     return $normalizedSupported[$localeLower];
                 }
-
-                // 2. Try language prefix match (e.g., 'en' from 'en-US')
                 $langPrefix = explode('-', $localeLower)[0];
                 if (isset($normalizedSupported[$langPrefix])) {
                     return $normalizedSupported[$langPrefix];
@@ -69,31 +64,34 @@ class RegisterMacros
             return null;
         });
 
-        URL::macro('withLocale', function (string $locale) use ($facade): string {
+        // 3. URL macros
+        URL::macro('withLocale', function (string $locale) use ($contract): string {
+            $service = app($contract);
             $route = request()->route();
 
             if (! $route || ! $route->getName()) {
                 $currentUrl = request()->fullUrl();
-                $currentLocale = $facade::getCurrentLocale();
+                $currentLocale = $service->getCurrentLocale();
 
+                // Safe string replacement for simple paths
                 return str_replace("/{$currentLocale}/", "/{$locale}/", $currentUrl);
             }
 
-            return $facade::route(
+            return $service->route(
                 $route->getName(),
                 array_merge($route->parameters(), ['locale' => $locale])
             );
         });
 
-        URL::macro('localeRoute', function ($name, $params = [], $absolute = true) use ($facade) {
-            return $facade::route($name, $params, $absolute);
+        URL::macro('localeRoute', function ($name, $params = [], $absolute = true) use ($contract) {
+            return app($contract)->route($name, $params, $absolute);
         });
 
-        // Route macro for locale-prefixed route groups
-        Route::macro('localized', function (?\Closure $callback = null) use ($facade) {
-            $supportedList = $facade::getSupportedLocales();
+        // 4. Route macro for locale-prefixed groups
+        Route::macro('localized', function (?\Closure $callback = null) use ($contract) {
+            $service = app($contract);
+            $supportedList = $service->getSupportedLocales();
 
-            // In RegisterMacros.php -> Route::macro
             $regex = ! empty($supportedList)
                 ? '(?i)'.implode('|', array_map('preg_quote', $supportedList))
                 : '[a-zA-Z-]+';

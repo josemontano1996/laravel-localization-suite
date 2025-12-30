@@ -5,64 +5,65 @@ declare(strict_types=1);
 namespace Josemontano1996\LaravelLocalizationSuite\Registrars;
 
 use Illuminate\Support\Facades\Blade;
-use Josemontano1996\LaravelLocalizationSuite\Facades\Localization;
+use Josemontano1996\LaravelLocalizationSuite\Contracts\LocalizationServiceContract;
 
 class RegisterBladeDirectives
 {
     public static function register(): void
     {
-        $facade = '\\'.Localization::class;
+        $service = 'app(\\Josemontano1996\\LaravelLocalizationSuite\\Contracts\\LocalizationServiceContract::class)';
 
         // --- Navigation & Translation ---
-        Blade::directive('route', fn ($expr) => "<?php echo {$facade}::route($expr); ?>");
-        Blade::directive('t', fn ($expr) => "<?php echo {$facade}::t($expr); ?>");
-        Blade::directive('tchoice', fn ($expr) => "<?php echo {$facade}::tchoice($expr); ?>");
+        Blade::directive('route', fn ($expr) => "<?php echo {$service}->route($expr); ?>");
+        Blade::directive('t', fn ($expr) => "<?php echo {$service}->t($expr); ?>");
+        Blade::directive('tchoice', fn ($expr) => "<?php echo {$service}->tchoice($expr); ?>");
 
         // --- State ---
-        Blade::directive('locale', fn () => "<?php echo {$facade}::getCurrentLocale(); ?>");
+        Blade::directive('locale', fn () => "<?php echo {$service}->getCurrentLocale(); ?>");
 
         Blade::if('localeIs', function ($code) {
-            return Localization::getCurrentLocale() === $code;
+            return app(LocalizationServiceContract::class)
+                ->getCurrentLocale() === $code;
         });
-        
-        Blade::directive('locales', function ($expression) use ($facade) {
+
+        Blade::directive('locales', function ($expression) use ($service) {
             $variable = trim($expression, '() ');
 
-            return "<?php foreach({$facade}::getSupportedLocales() as {$variable}): ?>";
+            return "<?php foreach({$service}->getSupportedLocales() as {$variable}): ?>";
         });
 
         Blade::directive('endlocales', fn () => '<?php endforeach; ?>');
 
         // --- Formatting ---
-        Blade::directive('number', fn ($expr) => "<?php echo {$facade}::formatNumber(...[$expr], style: \NumberFormatter::DECIMAL); ?>");
+        Blade::directive('number', fn ($expr) => "<?php echo {$service}->formatNumber(...[$expr], style: \NumberFormatter::DECIMAL); ?>");
 
-        Blade::directive('currency', function ($expression) use ($facade) {
+        Blade::directive('currency', function ($expression) use ($service) {
             return "<?php 
                 \$args = [$expression];
-                echo {$facade}::formatNumber(\$args[0] ?? 0, \NumberFormatter::CURRENCY, [
+                echo {$service}->formatNumber(\$args[0] ?? 0, \NumberFormatter::CURRENCY, [
                     'currency' => \$args[1] ?? 'USD',
                     'decimals' => \$args[2] ?? null
                 ]); 
             ?>";
         });
 
-        Blade::directive('percent', fn ($expr) => "<?php echo {$facade}::formatNumber(...[$expr], style: \NumberFormatter::PERCENT); ?>");
+        Blade::directive('percent', fn ($expr) => "<?php echo {$service}->formatNumber(...[$expr], style: \NumberFormatter::PERCENT); ?>");
 
         // --- Dates ---
-        Blade::directive('date', function ($expression) use ($facade) {
+        Blade::directive('date', function ($expression) use ($service) {
             return "<?php 
                 \$args = [$expression];
                 echo \\Carbon\\CarbonImmutable::parse(\$args[0] ?? 'now')
-                    ->locale({$facade}::getCurrentLocale())
+                    ->locale({$service}->getCurrentLocale())
                     ->isoFormat(\$args[1] ?? 'LL'); 
             ?>";
         });
 
-        Blade::directive('datetime', function ($expression) use ($facade) {
+        Blade::directive('datetime', function ($expression) use ($service) {
             return "<?php 
                 \$args = [$expression];
                 echo \\Carbon\\CarbonImmutable::parse(\$args[0] ?? 'now')
-                    ->locale({$facade}::getCurrentLocale())
+                    ->locale({$service}->getCurrentLocale())
                     ->isoFormat(\$args[1] ?? 'LLL'); 
             ?>";
         });
