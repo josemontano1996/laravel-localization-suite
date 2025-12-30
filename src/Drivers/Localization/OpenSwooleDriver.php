@@ -11,6 +11,7 @@ use Josemontano1996\LaravelLocalizationSuite\Traits\IsContextIsolated;
 class OpenSwooleDriver implements LocalizationDriverContract
 {
     use IsContextIsolated;
+
     public function __construct()
     {
         throw new Exception('Not implemented');

@@ -30,7 +30,7 @@ class SetLocale
         }
 
         // 3. Set the locale in the service
-        
+
         $this->service->setCurrentLocale((string) $locale);
 
         return $next($request);

@@ -9,8 +9,8 @@ use Josemontano1996\LaravelLocalizationSuite\Traits\MutatesGlobalState;
 
 class NativeDriver implements LocalizationDriverContract
 {
-
     use MutatesGlobalState;
+
     public function getCurrentLocale(): string
     {
         return (string) app()->getLocale();
@@ -20,5 +20,4 @@ class NativeDriver implements LocalizationDriverContract
     {
         app()->setLocale($locale);
     }
-
 }

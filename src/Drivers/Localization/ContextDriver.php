@@ -11,6 +11,7 @@ use Josemontano1996\LaravelLocalizationSuite\Traits\IsContextIsolated;
 class ContextDriver implements LocalizationDriverContract
 {
     use IsContextIsolated;
+
     private const string CONTEXT_KEY = 'localization_locale';
 
     public function getCurrentLocale(): string

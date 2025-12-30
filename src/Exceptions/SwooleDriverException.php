@@ -17,6 +17,4 @@ class SwooleDriverException extends RuntimeException
             'The SwooleDriver requires the "swoole" PHP extension to be installed and enabled.'
         );
     }
-
-
 }

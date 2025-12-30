@@ -17,8 +17,11 @@ use Josemontano1996\LaravelLocalizationSuite\Services\LocalizationService;
 
 class LocalizationServiceProvider extends ServiceProvider
 {
+    private const string CONFIG_PATH = __DIR__.'/../../config/localization.php';
+
     public function register(): void
     {
+        $this->mergeConfigFrom(self::CONFIG_PATH, 'localization');
 
         $this->app->scoped(LocalizationDriverContract::class, function ($app) {
             // 1. Get the string "key" from the config (default to 'native')
@@ -58,16 +61,18 @@ class LocalizationServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        if ($this->app->runningInConsole()) {
+            $this->publishes([
+                self::CONFIG_PATH => config_path('localization.php'),
+            ], 'localization-config');
+        }
+
         RegisterBladeDirectives::register();
         RegisterMacros::register();
         $this->registerValidationLocalization();
 
         $loader = AliasLoader::getInstance();
         $loader->alias('Localization', \Josemontano1996\LaravelLocalizationSuite\Facades\Localization::class);
-
-        $this->publishes([
-            __DIR__.'/../config/localization.php' => config_path('localization.php'),
-        ], 'localization-config');
     }
 
     /**
