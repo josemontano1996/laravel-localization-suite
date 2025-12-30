@@ -4,31 +4,56 @@ declare(strict_types=1);
 
 namespace Josemontano1996\LaravelLocalizationSuite\Drivers\Localization;
 
-use Exception;
 use Josemontano1996\LaravelLocalizationSuite\Contracts\LocalizationDriverContract;
+use Josemontano1996\LaravelLocalizationSuite\Exceptions\SwooleDriverException;
 use Josemontano1996\LaravelLocalizationSuite\Traits\IsContextIsolated;
+use Swoole\Coroutine;
 
 class SwooleDriver implements LocalizationDriverContract
 {
     use IsContextIsolated;
 
+    private const string CONTEXT_KEY = 'localization_locale';
+
     public function __construct()
     {
-        throw new Exception('Not implemented');
-    }
+        if (! extension_loaded('swoole')) {
+            throw SwooleDriverException::missingExtension();
+        }
 
-    public function getCurrentLocale(): string
-    {
-        throw new Exception('Not implemented');
+        if (! class_exists(Coroutine::class)) {
+            throw SwooleDriverException::missingExtension();
+        }
     }
 
     /**
-     * Set the current locale for the request.
-     *
-     * @param  string  $locale  Locale code to set (case-sensitive)
+     * Get the current locale from the Swoole Coroutine Context.
+     */
+    public function getCurrentLocale(): ?string
+    {
+        // Get current Coroutine ID. Returns -1 if not in a coroutine
+        $cid = Coroutine::getuid();
+
+        if ($cid <= 0) {
+            return null;
+        }
+
+        // Access the specific context for this CID
+        $context = Coroutine::getContext($cid);
+
+        return $context[self::CONTEXT_KEY] ?? null;
+    }
+
+    /**
+     * Set the current locale for the specific Swoole Coroutine.
      */
     public function setCurrentLocale(string $locale): void
     {
-        throw new Exception('Not implemented');
+        $cid = Coroutine::getuid();
+
+        if ($cid > 0) {
+            $context = Coroutine::getContext($cid);
+            $context[self::CONTEXT_KEY] = $locale;
+        }
     }
 }

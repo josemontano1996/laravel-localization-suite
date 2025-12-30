@@ -31,7 +31,11 @@
         "laravel/pint": "^1.26",
         "pestphp/pest": "^4.2",
         "orchestra/testbench": "^10.8",
-        "phpstan/phpstan": "^2.1"
+        "phpstan/phpstan": "^2.1",
+        "swoole/ide-helper": "^6.0"
+    },
+    "suggest": {
+        "ext-swoole": "Required to use the SwooleDriver for high-concurrency isolation."
     },
     "extra": {
         "laravel": {
