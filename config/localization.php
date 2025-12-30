@@ -21,4 +21,5 @@ return [
     |
     */
     'driver' => env('LOCALIZATION_DRIVER', 'native'),
+    'route_key' => 'locale',
 ];

@@ -18,8 +18,14 @@ final class LocalizationService implements LocalizationServiceContract
 
     public function __construct(
         private LocalizationDriverContract $localizationDriver,
-        private UrlGenerator $url // Inject this instead of using the Facade
+        private UrlGenerator $url,
+        private string $routeKey,
     ) {}
+
+    public function getRouteKey(): string
+    {
+        return $this->routeKey;
+    }
 
     public function getCurrentLocale(): string
     {
@@ -28,6 +34,9 @@ final class LocalizationService implements LocalizationServiceContract
 
     public function setCurrentLocale(string $locale): void
     {
+        if (! \in_array($locale, $this->getSupportedLocales())) {
+            $locale = $this->getConfigLocale();
+        }
         $this->localizationDriver->setCurrentLocale($locale);
 
         if ($this->localizationDriver->isSafeToMutateGlobalState()) {
@@ -38,7 +47,7 @@ final class LocalizationService implements LocalizationServiceContract
     public function route(BackedEnum|string $name, mixed $parameters = [], bool $absolute = true): string
     {
         $parameters = \is_array($parameters) ? $parameters : [$parameters];
-        $parameters = ['locale' => $this->getCurrentLocale(), ...$parameters];
+        $parameters = [$this->getRouteKey() => $this->getCurrentLocale(), ...$parameters];
 
         return $this->url->route($name, $parameters, $absolute);
     }
@@ -72,7 +81,7 @@ final class LocalizationService implements LocalizationServiceContract
 
     private function syncGlobalState(string $locale): void
     {
-        $this->url->defaults(['locale' => $locale]);
+        $this->url->defaults([$this->getRouteKey() => $locale]);
 
         // Global Carbon State
         if (class_exists(Carbon::class)) {

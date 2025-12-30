@@ -16,6 +16,8 @@ interface LocalizationServiceContract
      */
     public function getCurrentLocale(): string;
 
+    public function getRouteKey(): string;
+
     /**
      * Set the current locale for the request.
      *

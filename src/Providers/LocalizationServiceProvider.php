@@ -48,7 +48,8 @@ class LocalizationServiceProvider extends ServiceProvider
         $this->app->scoped(LocalizationServiceContract::class, function ($app) {
             return new LocalizationService(
                 $app->make(LocalizationDriverContract::class),
-                $app->make(\Illuminate\Routing\UrlGenerator::class)
+                $app->make(\Illuminate\Routing\UrlGenerator::class),
+                config('localization.route_key', 'locale')
             );
         });
     }

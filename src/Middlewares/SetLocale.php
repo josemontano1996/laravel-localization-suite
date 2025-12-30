@@ -21,7 +21,7 @@ class SetLocale
     public function handle(Request $request, Closure $next): Response
     {
         // 1. Get locale from URL parameter {locale}
-        $locale = $request->route('locale');
+        $locale = $request->route($this->service->getRouteKey());
 
         // 2. If no locale in URL, detect via the service and request macros
         if (! $locale) {

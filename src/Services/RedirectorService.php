@@ -53,7 +53,7 @@ class RedirectorService
     public function action(array|string $action, mixed $params = [], int $status = 302, array $headers = []): RedirectResponse
     {
         // Inject locale into the action parameters
-        $params = array_merge(['locale' => $this->service->getCurrentLocale()], (array) $params);
+        $params = array_merge([$this->service->getRouteKey() => $this->service->getCurrentLocale()], (array) $params);
 
         return $this->redirector->action($action, $params, $status, $headers);
     }
@@ -63,7 +63,7 @@ class RedirectorService
      */
     public function refresh(int $status = 302, array $headers = []): RedirectResponse
     {
-        return $this->redirector->to(app('url')->current(), $status, $headers);
+        return $this->redirector->to($this->service->route(request()->path()), $status, $headers);
     }
 
     /**
@@ -71,7 +71,7 @@ class RedirectorService
      */
     public function signedRoute(string $name, mixed $params = [], $expiration = null, int $status = 302, array $headers = []): RedirectResponse
     {
-        $params = array_merge(['locale' => $this->service->getCurrentLocale()], (array) $params);
+        $params = array_merge([$this->service->getRouteKey() => $this->service->getCurrentLocale()], (array) $params);
 
         return $this->redirector->to(
             app('url')->signedRoute($name, $params, $expiration),
@@ -85,7 +85,7 @@ class RedirectorService
      */
     public function temporarySignedRoute(string $name, $expiration, mixed $params = [], int $status = 302, array $headers = []): RedirectResponse
     {
-        $params = array_merge(['locale' => $this->service->getCurrentLocale()], (array) $params);
+        $params = array_merge([$this->service->getRouteKey() => $this->service->getCurrentLocale()], (array) $params);
 
         return $this->redirector->to(
             app('url')->temporarySignedRoute($name, $expiration, $params),

@@ -67,19 +67,19 @@ class RegisterMacros
         // 3. URL macros
         URL::macro('withLocale', function (string $locale) use ($contract): string {
             $service = app($contract);
+            $routeKey = $service->getRouteKey();
             $route = request()->route();
 
             if (! $route || ! $route->getName()) {
                 $currentUrl = request()->fullUrl();
                 $currentLocale = $service->getCurrentLocale();
 
-                // Safe string replacement for simple paths
                 return str_replace("/{$currentLocale}/", "/{$locale}/", $currentUrl);
             }
 
             return $service->route(
                 $route->getName(),
-                array_merge($route->parameters(), ['locale' => $locale])
+                array_merge($route->parameters(), [$routeKey => $locale])
             );
         });
 
@@ -90,13 +90,15 @@ class RegisterMacros
         // 4. Route macro for locale-prefixed groups
         Route::macro('localized', function (?\Closure $callback = null) use ($contract) {
             $service = app($contract);
+            $routeKey = $service->getRouteKey(); // Dynamically get the key (e.g., 'lang')
             $supportedList = $service->getSupportedLocales();
 
             $regex = ! empty($supportedList)
                 ? '(?i)'.implode('|', array_map('preg_quote', $supportedList))
                 : '[a-zA-Z-]+';
 
-            $registrar = Route::prefix('{locale}')->where(['locale' => $regex]);
+            // Use the dynamic key for the prefix and the where constraint
+            $registrar = Route::prefix('{'.$routeKey.'}')->where([$routeKey => $regex]);
 
             return $callback ? $registrar->group($callback) : $registrar;
         });
