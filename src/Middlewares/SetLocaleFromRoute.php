@@ -9,7 +9,7 @@ use Illuminate\Http\Request;
 use Josemontano1996\LaravelLocalizationSuite\Contracts\LocalizationServiceContract;
 use Symfony\Component\HttpFoundation\Response;
 
-class SetLocale
+class SetLocaleFromRoute
 {
     public function __construct(
         protected LocalizationServiceContract $service
