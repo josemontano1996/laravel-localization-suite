@@ -2,6 +2,8 @@
 
 declare(strict_types=1);
 
+namespace Josemontano1996\LaravelLocalizationSuite\Providers;
+
 use Illuminate\Foundation\AliasLoader;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\ServiceProvider;
