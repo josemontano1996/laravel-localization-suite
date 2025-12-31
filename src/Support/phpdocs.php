@@ -2,6 +2,8 @@
 
 declare(strict_types=1);
 
+// Phpdoc stubs for IDE support only. Do not redeclare any real Laravel or vendor classes.
+
 namespace Illuminate\Http {
     /**
      * @method array acceptedLocales()
@@ -12,76 +14,17 @@ namespace Illuminate\Http {
 }
 
 namespace Josemontano1996\LaravelLocalizationSuite\Services {
-    use Illuminate\Http\RedirectResponse;
-
     /**
      * @mixin \Illuminate\Routing\Redirector
      */
-    class RedirectorService
-    {
-        public function route(string $name, mixed $params = [], int $status = 302, array $headers = []): RedirectResponse
-        {
-            return new RedirectResponse('');
-        }
-
-        public function intended(string $default = '/', int $status = 302, array $headers = []): RedirectResponse
-        {
-            return new RedirectResponse('');
-        }
-
-        public function action(array|string $action, mixed $params = [], int $status = 302, array $headers = []): RedirectResponse
-        {
-            return new RedirectResponse('');
-        }
-
-        public function refresh(int $status = 302, array $headers = []): RedirectResponse
-        {
-            return new RedirectResponse('');
-        }
-
-        public function signedRoute(string $name, mixed $params = [], $expiration = null, int $status = 302, array $headers = []): RedirectResponse
-        {
-            return new RedirectResponse('');
-        }
-
-        public function temporarySignedRoute(string $name, $expiration, mixed $params = [], int $status = 302, array $headers = []): RedirectResponse
-        {
-            return new RedirectResponse('');
-        }
-
-        public function back(int $status = 302, array $headers = [], $fallback = false): RedirectResponse
-        {
-            return new RedirectResponse('');
-        }
-
-        public function to(string $path, int $status = 302, array $headers = [], ?bool $secure = null): RedirectResponse
-        {
-            return new RedirectResponse('');
-        }
-
-        public function away(string $path, int $status = 302, array $headers = []): RedirectResponse
-        {
-            return new RedirectResponse('');
-        }
-    }
+    // Intentionally left blank for phpdoc only. Do not redeclare RedirectorService class here to avoid PSR-4 issues.
 }
 
 namespace Illuminate\Routing {
-    use Josemontano1996\LaravelLocalizationSuite\Services\RedirectorService;
-
-    class Redirector
-    {
-        /**
-         * Access the localized redirect proxy.
-         */
-        public function localized(): RedirectorService
-        {
-            return new RedirectorService(
-                $this,
-                app(\Josemontano1996\LaravelLocalizationSuite\Contracts\LocalizationServiceContract::class)
-            );
-        }
-    }
+    /**
+     * @method \Josemontano1996\LaravelLocalizationSuite\Services\RedirectorService localized()
+     */
+    // Intentionally left blank for phpdoc only. Do not redeclare Redirector class to avoid shadowing Laravel's core.
 }
 
 namespace Illuminate\Support\Facades {
@@ -89,5 +32,5 @@ namespace Illuminate\Support\Facades {
      * @method static string withLocale(string $locale)
      * @method static string localeRoute($name, $params = [], $absolute = true)
      */
-    class URL {}
+    // Intentionally left blank for phpdoc only. Do not redeclare URL class to avoid shadowing Laravel's core.
 }
