@@ -7,6 +7,11 @@ namespace Tests;
 use Josemontano1996\LaravelLocalizationSuite\Providers\LocalizationServiceProvider;
 use Orchestra\Testbench\TestCase as BaseTestCase;
 
+/**
+ * @property \Illuminate\Routing\Redirector $redirector
+ * @property \Josemontano1996\LaravelLocalizationSuite\Contracts\LocalizationServiceContract $service
+ * @property \Josemontano1996\LaravelLocalizationSuite\Services\RedirectorService $redirectorService
+ */
 abstract class TestCase extends BaseTestCase
 {
     protected const string DEFAULT_LOCALE = 'en';
