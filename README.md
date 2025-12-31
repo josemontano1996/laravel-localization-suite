@@ -395,10 +395,10 @@ composer analyse    # Run PHPStan
 
 ## 📄 License
 
-MIT License. See [LICENSE](LICENSE) for details.
+MIT License. See [LICENSE](LICENSE.md) for details.
 
 ---
 
 ## 🤝 Contributing
 
-Contributions are welcome! See [CONTRIBUTING](CONTRIBUTING) for details.
+Contributions are welcome! See [CONTRIBUTING](CONTRIBUTING.md) for details.
