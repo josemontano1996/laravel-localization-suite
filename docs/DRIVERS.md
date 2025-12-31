@@ -1,4 +1,4 @@
-# [← Back to Main Documentation](../README.md)
+### [← Back to Main Documentation](../README.md)
 
 # Driver Architecture
 
@@ -107,4 +107,4 @@ Register your custom driver in your service provider or in `config/localization.
 
 Refer to the existing drivers in `src/Drivers/Localization/` for implementation examples and best practices.
 
-# [← Back to Main Documentation](../README.md)
+### [← Back to Main Documentation](../README.md)
