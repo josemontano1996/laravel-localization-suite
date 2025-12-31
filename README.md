@@ -384,6 +384,14 @@ composer analyse    # Run PHPStan
 
 ---
 
+## 📚 Detailed Documentation
+
+- [Drivers Documentation](docs/DRIVERS.md): In-depth guide to all available drivers, concurrency, and custom driver implementation.
+- [Middleware Usage](#middlewares): Learn about the provided middlewares and how to use them for locale detection and headers.
+- [Advanced Guides Coming Soon]
+
+---
+
 ## 📄 License
 
 MIT License. See [LICENSE](LICENSE) for details.
@@ -392,4 +400,4 @@ MIT License. See [LICENSE](LICENSE) for details.
 
 ## 🤝 Contributing
 
-Contributions are welcome! Please feel free to submit a Pull Request.
+Contributions are welcome! See [CONTRIBUTING](CONTRIBUTING) for details.
