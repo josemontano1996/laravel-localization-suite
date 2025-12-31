@@ -387,8 +387,9 @@ composer analyse    # Run PHPStan
 ## 📚 Detailed Documentation
 
 - [Drivers Documentation](docs/DRIVERS.md): In-depth guide to all available drivers, concurrency, and custom driver implementation.
-- [Middleware Usage](#middlewares): Learn about the provided middlewares and how to use them for locale detection and headers.
-- [Advanced Guides Coming Soon]
+- [Middleware Documentation](docs/MIDDLEWARES.md): Learn about the provided middlewares and how to use them for locale detection and headers.
+- [Blade Directives Documentation](docs/BLADEDIRECTIVES.md): Learn about the blade directives.
+- [Macros Documentation](docs/MACROS.md): Learn about the package macros.
 
 ---
 
