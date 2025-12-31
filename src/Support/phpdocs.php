@@ -8,7 +8,7 @@ namespace Illuminate\Http {
      * @method string|null preferredLocale(array $supported = [])
      * @method string locale()
      */
-    class Request {}
+    // Intentionally left blank for phpdoc only. Do not redeclare Request class to avoid shadowing Laravel's core.
 }
 
 namespace Josemontano1996\LaravelLocalizationSuite\Services {
