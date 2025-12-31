@@ -48,7 +48,24 @@ This package uses a driver-based architecture to manage localization state. Each
 
 ---
 
-## How to Select a Driver
+## Understanding `isSafeToMutateGlobalState()`
+
+Each driver must implement the `isSafeToMutateGlobalState()` method. This method tells the package whether it is safe to mutate global state (such as Laravel's app locale, Carbon's locale, and URL defaults) when the locale changes.
+
+- If a driver returns **true** (like the Native driver), the package will update:
+
+  - `app()->setLocale($locale)` (Laravel global locale)
+  - `Carbon::setLocale($locale)` and `CarbonImmutable::setLocale($locale)` (date/time localization)
+  - URL generator defaults for the locale route key
+
+- If a driver returns **false** (like Context, Swoole, and OpenSwoole drivers), these global changes are **not** performed. This prevents cross-request locale bleed in concurrent environments.
+
+This distinction is critical for concurrency safety. In traditional PHP (FPM), mutating global state is safe. In concurrent servers (Swoole/OpenSwoole/Octane), only per-request or per-coroutine state should be changed.
+
+**Summary:**
+
+- Use `true` if your driver is for single-request environments and you want global state (including Carbon and URL) to reflect the current locale.
+- Use `false` for concurrent environments to avoid leaking locale state between requests.
 
 Set the driver in your `config/localization.php`:
 
