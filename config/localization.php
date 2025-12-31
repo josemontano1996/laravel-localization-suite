@@ -8,7 +8,7 @@ return [
     |
     | This option controls how the locale state is stored and isolated.
     |
-    | Built-in Drivers: 
+    | Built-in Drivers:
     |  - "native": Standard Laravel behavior (Global state).
     |  - "context": Laravel 11+ Context (Concurrent safe).
     |  - "swoole": Swoole Coroutine Context (For Laravel Octane).
