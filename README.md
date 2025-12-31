@@ -1,18 +1,19 @@
 # Laravel Localization Suite
 
-A comprehensive, **concurrent-safe** localization package for Laravel 12+ with first-class support for **Laravel Octane**, **Swoole**, and **OpenSwoole**.
+A comprehensive, **concurrent-safe** localization package for Laravel 12+ with first-class driver support for **Laravel Octane**, **Swoole**, and **OpenSwoole**.
 
 [![PHP Version](https://img.shields.io/badge/php-%5E8.4-blue)](https://php.net)
 [![Laravel Version](https://img.shields.io/badge/laravel-12.x-red)](https://laravel.com)
 
 ## ✨ Features
 
-- 🔄 **Driver-based architecture** — Swap between Native, Context, Swoole, or OpenSwoole drivers
-- 🚀 **Octane-ready** — Coroutine-safe locale isolation prevents cross-request bleed
-- 🛣️ **Localized routing** — Simple locale-prefixed route groups with automatic detection
-- 🎨 **Blade directives** — `@t`, `@route`, `@locale`, `@currency`, `@date` and more
-- 🔗 **Macros** — `redirect()->localized()`, `Route::localized()`, `URL::withLocale()`
-- ✅ **Validation** — Context-aware validation messages without touching global state
+- **Driver-based architecture** — Swap between Native, Context, Swoole, or OpenSwoole drivers
+- **Octane-ready** — Octane-safe drivers grant locale isolation preventing cross-request bleed
+- **Localized routing** — Simple locale-prefixed route groups with automatic detection
+- **Middlewares** - Useful middlewares for smart locale detection with metadata integration for best SEO practices
+- **Blade directives** — `@t`, `@route`, `@locale`, `@currency`, `@date` and more
+- **Macros** — `redirect()->localized()`, `Route::localized()`, `URL::withLocale()`
+- **Validation** — Context-aware validation messages without touching global state
 
 ---
 
@@ -32,6 +33,10 @@ php artisan vendor:publish --tag=localization-config
 
 ## ⚙️ Configuration
 
+## Drivers
+
+For a detailed explanation of all available drivers, their concurrency guarantees, and how to implement your own, see the [Drivers Documentation](docs/DRIVERS.md).
+
 ### `config/localization.php`
 
 ```php
@@ -42,10 +47,10 @@ return [
     |--------------------------------------------------------------------------
     |
     | Built-in Drivers:
-    |  - "native": Standard Laravel behavior (Global state).
-    |  - "context": Laravel 11+ Context (Concurrent safe).
-    |  - "swoole": Swoole Coroutine Context (For Laravel Octane).
-    |  - "openswoole": OpenSwoole Coroutine Context.
+    |  - "native": Standard Laravel behavior.
+    |  - "context": Laravel 11+ Context.
+    |  - "swoole": Swoole Coroutine Context (concurrency safe).
+    |  - "openswoole": OpenSwoole Coroutine Context (concurrency safe).
     |
     | Custom Drivers:
     | You may provide a fully qualified class name implementing:
@@ -92,6 +97,7 @@ Route::localized()
 ```
 
 This creates routes like:
+
 - `/en/`, `/es/`, `/fr/`
 - `/en/about`, `/es/about`, `/fr/about`
 
@@ -155,7 +161,7 @@ class HomeController extends Controller
 {{-- Language switcher --}}
 <nav>
     @locales($lang)
-        <a href="{{ URL::withLocale($lang) }}" 
+        <a href="{{ URL::withLocale($lang) }}"
            @if($lang === localization()->getCurrentLocale()) class="active" @endif>
             {{ strtoupper($lang) }}
         </a>
@@ -184,7 +190,7 @@ Route::localized()
 The package provides a `localization` middleware group that:
 
 1. **Detects locale from URL** — Reads the `{locale}` route parameter
-2. **Validates locale** — Redirects to best match if unsupported
+2. **Validates locale** — Redirects to best match if unsupported, falling back to smart request prefered locales
 3. **Sets response headers** — Adds `Content-Language` header
 
 ```php
@@ -325,36 +331,36 @@ class MyCustomDriver implements LocalizationDriverContract
 
 ### `localization()` Helper
 
-| Method | Description |
-|--------|-------------|
-| `getCurrentLocale(): string` | Get the current request locale |
-| `setCurrentLocale(string $locale): void` | Set the locale for the current request |
-| `getConfigLocale(): string` | Get the configured default locale |
-| `getSupportedLocales(): array` | Get list of supported locales |
-| `getRouteKey(): string` | Get the route parameter name (default: `locale`) |
-| `route($name, $params, $absolute): string` | Generate localized route URL |
-| `t($key, $replace, $locale): string` | Translate a string |
-| `tchoice($key, $number, $replace, $locale): string` | Pluralized translation |
-| `formatNumber($value, $style, $options): string` | Format number/currency/percent |
+| Method                                              | Description                                      |
+| --------------------------------------------------- | ------------------------------------------------ |
+| `getCurrentLocale(): string`                        | Get the current request locale                   |
+| `setCurrentLocale(string $locale): void`            | Set the locale for the current request           |
+| `getConfigLocale(): string`                         | Get the configured default locale                |
+| `getSupportedLocales(): array`                      | Get list of supported locales                    |
+| `getRouteKey(): string`                             | Get the route parameter name (default: `locale`) |
+| `route($name, $params, $absolute): string`          | Generate localized route URL                     |
+| `t($key, $replace, $locale): string`                | Translate a string                               |
+| `tchoice($key, $number, $replace, $locale): string` | Pluralized translation                           |
+| `formatNumber($value, $style, $options): string`    | Format number/currency/percent                   |
 
 ### Blade Directives
 
-| Directive | Usage |
-|-----------|-------|
-| `@locale` | Output current locale |
-| `@t('key')` | Translate string |
-| `@t('key', ['name' => $value])` | Translate with replacements |
-| `@tchoice('key', $count)` | Pluralized translation |
-| `@route('name')` | Localized route URL |
-| `@route('name', $params)` | Localized route with parameters |
-| `@number($value)` | Locale-formatted number |
-| `@currency($value, 'USD')` | Locale-formatted currency |
-| `@percent($value)` | Locale-formatted percentage |
-| `@date($date)` | Locale-formatted date |
-| `@date($date, 'MMMM YYYY')` | Date with custom format |
-| `@datetime($date)` | Locale-formatted date and time |
-| `@localeIs('en')` | Conditional for locale |
-| `@locales($var)` / `@endlocales` | Loop through supported locales |
+| Directive                        | Usage                           |
+| -------------------------------- | ------------------------------- |
+| `@locale`                        | Output current locale           |
+| `@t('key')`                      | Translate string                |
+| `@t('key', ['name' => $value])`  | Translate with replacements     |
+| `@tchoice('key', $count)`        | Pluralized translation          |
+| `@route('name')`                 | Localized route URL             |
+| `@route('name', $params)`        | Localized route with parameters |
+| `@number($value)`                | Locale-formatted number         |
+| `@currency($value, 'USD')`       | Locale-formatted currency       |
+| `@percent($value)`               | Locale-formatted percentage     |
+| `@date($date)`                   | Locale-formatted date           |
+| `@date($date, 'MMMM YYYY')`      | Date with custom format         |
+| `@datetime($date)`               | Locale-formatted date and time  |
+| `@localeIs('en')`                | Conditional for locale          |
+| `@locales($var)` / `@endlocales` | Loop through supported locales  |
 
 ### Facade
 
