@@ -17,7 +17,7 @@ describe('RedirectorService', function () {
         $response = $redirector->route('home');
 
         expect($response->status())->toBe(302);
-        expect($response->getTargetUrl())->toContain('locale=en');
+        expect($response->getTargetUrl())->toContain('/en');
     });
 
     it('redirects to localized route with parameters', function () {
@@ -28,8 +28,7 @@ describe('RedirectorService', function () {
         $response = $redirector->route('post.show', ['id' => 123]);
 
         expect($response->status())->toBe(302);
-        expect($response->getTargetUrl())->toContain('locale=es');
-        expect($response->getTargetUrl())->toContain('/post/123');
+        expect($response->getTargetUrl())->toContain('/es/post/123');
     });
 
     it('redirects with custom status code', function () {
@@ -66,10 +65,9 @@ describe('RedirectorService', function () {
         $redirector = app(RedirectorService::class);
         $service->setCurrentLocale('fr');
 
-        // Redirect to home route using the path method with route name
         $response = $redirector->route('home');
 
-        expect($response->getTargetUrl())->toContain('locale=fr');
+        expect($response->getTargetUrl())->toContain('/fr');
     });
 
     it('redirects back with localization', function () {
@@ -79,9 +77,8 @@ describe('RedirectorService', function () {
 
         $response = $redirector->back(302, [], 'home');
 
-        // back() creates a redirect response with a fallback URL
         expect($response->status())->toBe(302);
-        expect($response->getTargetUrl())->toContain('locale=es');
+        expect($response->getTargetUrl())->toContain('/es');
     });
 
     it('proxies unknown methods to underlying redirector', function () {
@@ -89,10 +86,9 @@ describe('RedirectorService', function () {
         $redirector = app(RedirectorService::class);
         $service->setCurrentLocale('en');
 
-        // Test that route() method (which exists) is correctly proxied
         $response = $redirector->route('home');
 
-        expect($response->getTargetUrl())->toContain('locale=en');
+        expect($response->getTargetUrl())->toContain('/en');
     });
 
     it('redirects to localized signed route', function () {
@@ -102,7 +98,7 @@ describe('RedirectorService', function () {
 
         $response = $redirector->signedRoute('home');
 
-        expect($response->getTargetUrl())->toContain('locale=en');
+        expect($response->getTargetUrl())->toContain('/en');
         expect($response->getTargetUrl())->toContain('signature=');
     });
 
@@ -113,8 +109,7 @@ describe('RedirectorService', function () {
 
         $response = $redirector->signedRoute('post.show', ['id' => 456]);
 
-        expect($response->getTargetUrl())->toContain('locale=en');
-        expect($response->getTargetUrl())->toContain('/post/456');
+        expect($response->getTargetUrl())->toContain('/en/post/456');
         expect($response->getTargetUrl())->toContain('signature=');
     });
 
@@ -125,7 +120,7 @@ describe('RedirectorService', function () {
 
         $response = $redirector->temporarySignedRoute('home', now()->addHours(1));
 
-        expect($response->getTargetUrl())->toContain('locale=fr');
+        expect($response->getTargetUrl())->toContain('/fr');
         expect($response->getTargetUrl())->toContain('signature=');
         expect($response->getTargetUrl())->toContain('expires=');
     });
@@ -137,7 +132,7 @@ describe('RedirectorService', function () {
 
         $response = $redirector->temporarySignedRoute('user.profile', now()->addHours(1), ['id' => 789]);
 
-        expect($response->getTargetUrl())->toContain('locale=es');
+        expect($response->getTargetUrl())->toContain('/es/user/789');
         expect($response->getTargetUrl())->toContain('expires=');
         expect($response->getTargetUrl())->toContain('signature=');
     });
@@ -191,8 +186,8 @@ describe('RedirectorService', function () {
         $service->setCurrentLocale('es');
         $response2 = $redirector->route('home');
 
-        expect($response1->getTargetUrl())->toContain('locale=en');
-        expect($response2->getTargetUrl())->toContain('locale=es');
+        expect($response1->getTargetUrl())->toContain('/en');
+        expect($response2->getTargetUrl())->toContain('/es');
     });
 
 });

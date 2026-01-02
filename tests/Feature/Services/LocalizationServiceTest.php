@@ -48,7 +48,7 @@ describe('LocalizationService', function () {
 
         $route = $service->route('home');
 
-        expect($route)->toContain('locale=en');
+        expect($route)->toContain('/en');
     });
 
     it('generates route with additional parameters', function () {
@@ -57,8 +57,7 @@ describe('LocalizationService', function () {
 
         $route = $service->route('post.show', ['id' => 123]);
 
-        expect($route)->toContain('locale=es');
-        expect($route)->toContain('/post/123');
+        expect($route)->toContain('/es/post/123');
     });
 
     it('generates absolute route by default', function () {

@@ -39,15 +39,15 @@ abstract class TestCase extends BaseTestCase
      */
     protected function defineRoutes($router): void
     {
-        Route::get('/', function () {
+        Route::get('/{locale}', function () {
             return 'home';
         })->name('home');
 
-        Route::get('/post/{id}', function () {
+        Route::get('/{locale}/post/{id}', function () {
             return 'post';
         })->name('post.show');
 
-        Route::get('/user/{id}', function () {
+        Route::get('/{locale}/user/{id}', function () {
             return 'user';
         })->name('user.profile');
     }
