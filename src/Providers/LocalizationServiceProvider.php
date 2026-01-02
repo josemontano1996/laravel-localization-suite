@@ -13,6 +13,8 @@ use Josemontano1996\LaravelLocalizationSuite\Drivers\Localization\ContextDriver;
 use Josemontano1996\LaravelLocalizationSuite\Drivers\Localization\NativeDriver;
 use Josemontano1996\LaravelLocalizationSuite\Drivers\Localization\OpenSwooleDriver;
 use Josemontano1996\LaravelLocalizationSuite\Drivers\Localization\SwooleDriver;
+use Josemontano1996\LaravelLocalizationSuite\Middlewares\SetLocaleFromRoute;
+use Josemontano1996\LaravelLocalizationSuite\Middlewares\SetLocalizedHeaders;
 use Josemontano1996\LaravelLocalizationSuite\Registrars\RegisterBladeDirectives;
 use Josemontano1996\LaravelLocalizationSuite\Registrars\RegisterMacros;
 use Josemontano1996\LaravelLocalizationSuite\Services\LocalizationService;
@@ -77,8 +79,8 @@ class LocalizationServiceProvider extends ServiceProvider
         $loader = AliasLoader::getInstance();
         $loader->alias('Localization', \Josemontano1996\LaravelLocalizationSuite\Facades\Localization::class);
         $router = $this->app->make(\Illuminate\Routing\Router::class);
-        $router->aliasMiddleware('localization.headers', \Josemontano1996\LaravelLocalizationSuite\Http\Middleware\SetLocalizedHeaders::class);
-        $router->aliasMiddleware('localization.from_route', \Josemontano1996\LaravelLocalizationSuite\Http\Middleware\SetLocaleFromRoute::class);
+        $router->aliasMiddleware('localization.headers', SetLocalizedHeaders::class);
+        $router->aliasMiddleware('localization.from_route', SetLocaleFromRoute::class);
         $router->middlewareGroup('localization', [
             'localization.from_route',
             'localization.headers',
