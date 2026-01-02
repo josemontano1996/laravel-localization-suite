@@ -44,6 +44,20 @@ interface LocalizationServiceContract
     public function getFallbackLocale(): string;
 
     /**
+     * Check if a locale is supported.
+     *
+     * @param  string  $locale  Locale code to check
+     */
+    public function isSupported(string $locale): bool;
+
+    /**
+     * Determine the best locale based on request or config.
+     *
+     * @param  \Illuminate\Http\Request|null  $request
+     */
+    public function negotiateLocale(?\Illuminate\Http\Request $request = null): string;
+
+    /**
      * Get the supported locales from configuration, or fallback to defaults.
      *
      * @return array<string> List of supported locale strings.

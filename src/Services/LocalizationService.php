@@ -32,9 +32,23 @@ final class LocalizationService implements LocalizationServiceContract
         return $this->localizationDriver->getCurrentLocale() ?? $this->getConfigLocale();
     }
 
+    public function isSupported(string $locale): bool
+    {
+        return \in_array($locale, $this->getSupportedLocales());
+    }
+
+    public function negotiateLocale(?\Illuminate\Http\Request $request = null): string
+    {
+        if ($request === null) {
+            return $this->getConfigLocale();
+        }
+
+        return $request->preferredLocale($this->getSupportedLocales()) ?? $this->getConfigLocale();
+    }
+
     public function setCurrentLocale(string $locale): void
     {
-        if (! \in_array($locale, $this->getSupportedLocales())) {
+        if (! $this->isSupported($locale)) {
             $locale = $this->getConfigLocale();
         }
         $this->localizationDriver->setCurrentLocale($locale);

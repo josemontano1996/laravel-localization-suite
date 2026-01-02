@@ -17,21 +17,16 @@ final class SetLocaleFromRoute
 
     public function handle(Request $request, Closure $next): Response
     {
-        $key = $this->service->getRouteKey(); // usually 'locale'
+        $key = $this->service->getRouteKey();
         $locale = $request->route($key);
-        $supported = $this->service->getSupportedLocales();
 
-        // 1. If a locale is present in the route but is UNSUPPORTED
-        if (! empty($locale) && ! \in_array($locale, $supported)) {
-            $preferred = $request->preferredLocale($supported);
-            $fallback = $preferred !== null ? $preferred : $this->service->getConfigLocale();
+        // 1. Locale present but UNSUPPORTED
+        if (! empty($locale) && ! $this->service->isSupported((string) $locale)) {
+            $fallback = $this->service->negotiateLocale($request);
+            $this->service->setCurrentLocale($fallback);
 
-            $this->service->setCurrentLocale((string) $fallback);
-
-            $path = $request->path();
-            $segments = explode('/', trim($path, '/'));
-
-            // Replace the invalid locale segment with the fallback
+            $segments = $request->segments();
+            // Replace the invalid locale segment with the fallback if it's the first segment
             if (! empty($segments) && $segments[0] === $locale) {
                 $segments[0] = $fallback;
             }
@@ -39,21 +34,10 @@ final class SetLocaleFromRoute
             return redirect()->to($this->buildUrl($request, $segments));
         }
 
-        // 2. If NO locale is present in the route parameters
-        if (empty($locale)) {
-            // Determine what the locale SHOULD be based on headers or config
-            $determinedLocale = $request->preferredLocale($supported) ?? $this->service->getConfigLocale();
-
-            // Set it globally so the app knows the language
-            $this->service->setCurrentLocale((string) $determinedLocale);
-
-            // IMPORTANT: We do NOT redirect here because the route might
-            // purposely not have a {locale} segment (like /nolocale1).
-            return $next($request);
-        }
-
-        // 3. Valid locale is present
-        $this->service->setCurrentLocale((string) $locale);
+        // 2. No locale or Valid locale
+        $this->service->setCurrentLocale(
+            empty($locale) ? $this->service->negotiateLocale($request) : (string) $locale
+        );
 
         return $next($request);
     }
@@ -65,6 +49,7 @@ final class SetLocaleFromRoute
     {
         $newPath = '/'.implode('/', $segments);
         $newUrl = $request->getSchemeAndHttpHost().$newPath;
+
         if ($query = $request->getQueryString()) {
             $newUrl .= '?'.$query;
         }
