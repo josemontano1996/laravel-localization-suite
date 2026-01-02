@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Josemontano1996\LaravelLocalizationSuite\Http\Middleware;
+namespace Josemontano1996\LaravelLocalizationSuite\Middlewares;
 
 use Closure;
 use Illuminate\Http\Request;
