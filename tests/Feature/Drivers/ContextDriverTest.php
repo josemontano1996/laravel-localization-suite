@@ -7,9 +7,13 @@ use Josemontano1996\LaravelLocalizationSuite\Contracts\LocalizationServiceContra
 use Josemontano1996\LaravelLocalizationSuite\Drivers\Localization\ContextDriver;
 
 describe('ContextDriver', function () {
-    it('stores locale in Laravel Context without mutating global state', function () {
+    beforeEach(function () {
+        app()->forgetScopedInstances();
+        app()->forgetInstance(LocalizationDriverContract::class);
         config(['localization.driver' => 'context']);
+    });
 
+    it('stores locale in Laravel Context without mutating global state', function () {
         $service = app(LocalizationServiceContract::class);
         $driver = app(LocalizationDriverContract::class);
 
