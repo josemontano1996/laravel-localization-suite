@@ -31,8 +31,8 @@ final class SetLocalizedHeaders
         // Add to Vary header (append if already exists)
         $vary = $response->headers->get('Vary');
         $varyValues = $vary ? array_map('trim', explode(',', $vary)) : [];
-
-        if (! in_array('Accept-Language', $varyValues, true)) {
+        
+        if (! \in_array('Accept-Language', $varyValues, true)) {
             $varyValues[] = 'Accept-Language';
             $response->headers->set('Vary', implode(', ', $varyValues));
         }
