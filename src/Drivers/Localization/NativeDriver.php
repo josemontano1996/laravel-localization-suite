@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Josemontano1996\LaravelLocalizationSuite\Drivers\Localization;
 
 use Josemontano1996\LaravelLocalizationSuite\Contracts\LocalizationDriverContract;
-use Josemontano1996\LaravelLocalizationSuite\Traits\MutatesGlobalState;
+use Josemontano1996\LaravelLocalizationSuite\Drivers\Localization\Concerns\MutatesGlobalState;
 
 class NativeDriver implements LocalizationDriverContract
 {

@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 use Illuminate\Support\Facades\Config;
 use Josemontano1996\LaravelLocalizationSuite\Exceptions\LocaleConfigException;
-use Josemontano1996\LaravelLocalizationSuite\Traits\ResolvesConfigLocale;
+use Josemontano1996\LaravelLocalizationSuite\Services\Concerns\ResolvesConfigLocale;
 
 beforeEach(function () {
     // Reset config before each test

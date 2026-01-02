@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Josemontano1996\LaravelLocalizationSuite\Traits;
+namespace Josemontano1996\LaravelLocalizationSuite\Services\Concerns;
 
 use Illuminate\Support\Facades\Config;
 use Josemontano1996\LaravelLocalizationSuite\Exceptions\LocaleConfigException;

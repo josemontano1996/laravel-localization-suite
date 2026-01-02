@@ -1,7 +1,7 @@
 <?php
 
 declare(strict_types=1);
-use Josemontano1996\LaravelLocalizationSuite\Traits\MutatesGlobalState;
+use Josemontano1996\LaravelLocalizationSuite\Drivers\Localization\Concerns\MutatesGlobalState;
 
 describe('MutatesGlobalState Trait', function () {
     $makeTraitUser = fn () => new class
@@ -20,8 +20,8 @@ describe('MutatesGlobalState Trait', function () {
                     <?php
                     require 'vendor/autoload.php';
                     class Tester {
-                        use \Josemontano1996\LaravelLocalizationSuite\Traits\IsContextIsolated;
-                        use \Josemontano1996\LaravelLocalizationSuite\Traits\MutatesGlobalState;
+                        use \Josemontano1996\LaravelLocalizationSuite\Services\Concerns\IsContextIsolated;
+                        use \Josemontano1996\LaravelLocalizationSuite\Services\Concerns\MutatesGlobalState;
                     }
                     new Tester();
                     PHP;

@@ -10,7 +10,7 @@ use Carbon\CarbonImmutable;
 use Illuminate\Routing\UrlGenerator;
 use Josemontano1996\LaravelLocalizationSuite\Contracts\LocalizationDriverContract;
 use Josemontano1996\LaravelLocalizationSuite\Contracts\LocalizationServiceContract;
-use Josemontano1996\LaravelLocalizationSuite\Traits\ResolvesConfigLocale;
+use Josemontano1996\LaravelLocalizationSuite\Services\Concerns\ResolvesConfigLocale;
 
 final class LocalizationService implements LocalizationServiceContract
 {

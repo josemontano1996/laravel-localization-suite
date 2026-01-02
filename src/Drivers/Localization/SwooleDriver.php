@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace Josemontano1996\LaravelLocalizationSuite\Drivers\Localization;
 
 use Josemontano1996\LaravelLocalizationSuite\Contracts\LocalizationDriverContract;
+use Josemontano1996\LaravelLocalizationSuite\Drivers\Localization\Concerns\IsContextIsolated;
 use Josemontano1996\LaravelLocalizationSuite\Exceptions\SwooleDriverException;
-use Josemontano1996\LaravelLocalizationSuite\Traits\IsContextIsolated;
 use Swoole\Coroutine;
 
 class SwooleDriver implements LocalizationDriverContract

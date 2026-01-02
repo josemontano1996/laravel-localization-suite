@@ -6,7 +6,7 @@ namespace Josemontano1996\LaravelLocalizationSuite\Drivers\Localization;
 
 use Illuminate\Support\Facades\Context;
 use Josemontano1996\LaravelLocalizationSuite\Contracts\LocalizationDriverContract;
-use Josemontano1996\LaravelLocalizationSuite\Traits\IsContextIsolated;
+use Josemontano1996\LaravelLocalizationSuite\Drivers\Localization\Concerns\IsContextIsolated;
 
 class ContextDriver implements LocalizationDriverContract
 {
