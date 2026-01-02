@@ -39,6 +39,7 @@ abstract class TestCase extends BaseTestCase
      */
     protected function defineRoutes($router): void
     {
+        // Routes with {locale} in path
         Route::get('/{locale}', function () {
             return 'home';
         })->name('home');
@@ -50,6 +51,15 @@ abstract class TestCase extends BaseTestCase
         Route::get('/{locale}/user/{id}', function () {
             return 'user';
         })->name('user.profile');
+
+        // Routes without {locale} - locale becomes query parameter
+        Route::get('/api/status', function () {
+            return 'api status';
+        })->name('api.status');
+
+        Route::get('/api/posts/{id}', function () {
+            return 'api post';
+        })->name('api.posts.show');
     }
 
     /**

@@ -60,6 +60,30 @@ describe('RedirectorService', function () {
         expect($response->getTargetUrl())->not()->toContain('locale=');
     });
 
+    it('redirects to route without locale segment using query parameter', function () {
+        $service = app(LocalizationServiceContract::class);
+        $redirector = app(RedirectorService::class);
+        $service->setCurrentLocale('es');
+
+        $response = $redirector->route('api.status');
+
+        expect($response->status())->toBe(302);
+        expect($response->getTargetUrl())->toContain('/api/status');
+        expect($response->getTargetUrl())->toContain('locale=es');
+    });
+
+    it('redirects to route without locale segment with parameters', function () {
+        $service = app(LocalizationServiceContract::class);
+        $redirector = app(RedirectorService::class);
+        $service->setCurrentLocale('fr');
+
+        $response = $redirector->route('api.posts.show', ['id' => 99]);
+
+        expect($response->status())->toBe(302);
+        expect($response->getTargetUrl())->toContain('/api/posts/99');
+        expect($response->getTargetUrl())->toContain('locale=fr');
+    });
+
     it('redirects to localized path', function () {
         $service = app(LocalizationServiceContract::class);
         $redirector = app(RedirectorService::class);

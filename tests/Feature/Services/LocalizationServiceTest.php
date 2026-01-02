@@ -60,6 +60,26 @@ describe('LocalizationService', function () {
         expect($route)->toContain('/es/post/123');
     });
 
+    it('generates route without locale segment using query parameter', function () {
+        $service = app(LocalizationServiceContract::class);
+        $service->setCurrentLocale('en');
+
+        $route = $service->route('api.status');
+
+        expect($route)->toContain('/api/status');
+        expect($route)->toContain('locale=en');
+    });
+
+    it('generates route without locale segment with additional params', function () {
+        $service = app(LocalizationServiceContract::class);
+        $service->setCurrentLocale('fr');
+
+        $route = $service->route('api.posts.show', ['id' => 42]);
+
+        expect($route)->toContain('/api/posts/42');
+        expect($route)->toContain('locale=fr');
+    });
+
     it('generates absolute route by default', function () {
         $service = app(LocalizationServiceContract::class);
         $service->setCurrentLocale('en');
