@@ -29,6 +29,18 @@ trait ResolvesConfigLocale
     }
 
     /**
+     * Get the application's fallback locale from configuration.
+     *
+     * @return string The fallback locale configured in 'app.fallback_locale'.
+     *
+     * @throws LocaleConfigException If the fallback locale is not set in config.
+     */
+    public function getFallbackLocale(): string
+    {
+        return $this->getDefaultFallbackLocale();
+    }
+
+    /**
      * Get the application's default locale from configuration.
      *
      * @return string|null The locale configured in 'app.locale', or null if not set.

@@ -35,6 +35,15 @@ interface LocalizationServiceContract
     public function getConfigLocale(): string;
 
     /**
+     * Get the application's fallback locale from configuration.
+     *
+     * @return string The fallback locale.
+     *
+     * @throws LocaleConfigException If the fallback locale is not set in config.
+     */
+    public function getFallbackLocale(): string;
+
+    /**
      * Get the supported locales from configuration, or fallback to defaults.
      *
      * @return array<string> List of supported locale strings.
