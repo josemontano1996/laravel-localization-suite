@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Tests;
 
+use Illuminate\Support\Facades\Route;
 use Josemontano1996\LaravelLocalizationSuite\Providers\LocalizationServiceProvider;
 use Orchestra\Testbench\TestCase as BaseTestCase;
 
@@ -31,6 +32,24 @@ abstract class TestCase extends BaseTestCase
         $app['config']->set('app.locale', $this::DEFAULT_LOCALE);
         $app['config']->set('app.fallback_locale', $this::FALLBACK_LOCALE);
         $app['config']->set('app.supported_locales', $this::SUPPORTED_LOCALES);
+    }
+
+    /**
+     * Define routes for testing.
+     */
+    protected function defineRoutes($router): void
+    {
+        Route::get('/', function () {
+            return 'home';
+        })->name('home');
+
+        Route::get('/post/{id}', function () {
+            return 'post';
+        })->name('post.show');
+
+        Route::get('/user/{id}', function () {
+            return 'user';
+        })->name('user.profile');
     }
 
     /**
