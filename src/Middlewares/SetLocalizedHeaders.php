@@ -26,9 +26,16 @@ final class SetLocalizedHeaders
 
         $locale = $this->localizationService->getCurrentLocale();
 
-        $response->header('Content-Language', $locale);
+        $response->headers->set('Content-Language', $locale);
 
-        $response->vary('Accept-Language');
+        // Add to Vary header (append if already exists)
+        $vary = $response->headers->get('Vary');
+        $varyValues = $vary ? array_map('trim', explode(',', $vary)) : [];
+
+        if (! in_array('Accept-Language', $varyValues, true)) {
+            $varyValues[] = 'Accept-Language';
+            $response->headers->set('Vary', implode(', ', $varyValues));
+        }
 
         return $response;
     }
