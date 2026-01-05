@@ -61,9 +61,16 @@
     },
     "archive": {
         "exclude": [
-            "benchmarks",
-            "benchmarks/**",
-            "tests/Integration/**"
+            "/benchmarks",
+            "/benchmarks/**",
+            "/tests/Integration/**",
+            "/vendor",
+            "/node_modules",
+            "/.git",
+            "/.github",
+            "/composer.lock",
+            ".gitignore",
+            ".gitattributes"
         ]
     }
 }
