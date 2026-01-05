@@ -41,7 +41,7 @@
     "extra": {
         "laravel": {
             "providers": [
-                "Josemontano1996\\LaravelLocalizationSuite\\LocalizationServiceProvider"
+                "Josemontano1996\\LaravelLocalizationSuite\\Providers\\LocalizationServiceProvider"
             ],
             "aliases": {
                 "Localization": "Josemontano1996\\LaravelLocalizationSuite\\Facades\\Localization"

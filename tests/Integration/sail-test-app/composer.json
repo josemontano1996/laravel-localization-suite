@@ -13,7 +13,7 @@
             "type": "path",
             "url": "../../../",
             "options": {
-                "symlink": false
+                "symlink": true
             }
         }
     ],
@@ -44,6 +44,11 @@
         "psr-4": {
             "Tests\\": "tests/"
         }
+    },
+    "archive": {
+        "exclude": [
+            "tests/Integration/**"
+        ]
     },
     "scripts": {
         "setup": [
