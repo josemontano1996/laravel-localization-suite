@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 use Josemontano1996\LaravelLocalizationSuite\Drivers\Localization\OpenSwooleDriver;
 use Josemontano1996\LaravelLocalizationSuite\Drivers\Localization\SwooleDriver;
-use Mockery;
 
 class CoroutineStore
 {
