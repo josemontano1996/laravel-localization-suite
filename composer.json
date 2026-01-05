@@ -50,7 +50,7 @@
     },
     "scripts": {
         "test": "pest --parallel",
-        "coverage" :"pest --coverage",
+        "coverage": "pest --coverage",
         "lint": "pint --parallel",
         "analyse": "phpstan analyse"
     },
@@ -58,5 +58,12 @@
         "allow-plugins": {
             "pestphp/pest-plugin": true
         }
+    },
+    "archive": {
+        "exclude": [
+            "benchmarks",
+            "benchmarks/**",
+            "tests/Integration/**"
+        ]
     }
 }
