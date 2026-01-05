@@ -19,8 +19,9 @@
     ],
     "require": {
         "php": "^8.2",
-        "laravel/framework": "^12.0",
         "josemontano1996/laravel-localization-suite": "@dev",
+        "laravel/framework": "^12.0",
+        "laravel/octane": "*",
         "laravel/tinker": "^2.10.1"
     },
     "require-dev": {
@@ -100,6 +101,6 @@
             "php-http/discovery": true
         }
     },
-    "minimum-stability": "stable",
+    "minimum-stability": "dev",
     "prefer-stable": true
 }
