@@ -143,6 +143,7 @@ describe('SetLocaleFromRoute Middleware', function () {
             Route::middleware([SetLocaleFromRoute::class, SetLocalizedHeaders::class])
                 ->get('/nolocale1', function () {
                     $service = app(LocalizationServiceContract::class);
+
                     return response()->json(['locale' => $service->getCurrentLocale()]);
                 });
 

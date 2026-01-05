@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Tests;
 
 use Illuminate\Support\Facades\Route;
-use Josemontano1996\LaravelLocalizationSuite\Contracts\LocalizationServiceContract;
 use Josemontano1996\LaravelLocalizationSuite\Middlewares\SetLocaleFromRoute;
 use Josemontano1996\LaravelLocalizationSuite\Middlewares\SetLocalizedHeaders;
 use Josemontano1996\LaravelLocalizationSuite\Providers\LocalizationServiceProvider;

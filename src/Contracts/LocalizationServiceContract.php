@@ -52,8 +52,6 @@ interface LocalizationServiceContract
 
     /**
      * Determine the best locale based on request or config.
-     *
-     * @param  \Illuminate\Http\Request|null  $request
      */
     public function negotiateLocale(?\Illuminate\Http\Request $request = null): string;
 
