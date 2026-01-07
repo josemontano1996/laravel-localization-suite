@@ -83,9 +83,9 @@ echo "Ensuring Octane/Swoole are configured..."
 # 4. Restart with Octane enabled (Swoole)
 echo "Configuring Octane in .env..."
 sed -i '/SAIL_COMMAND=/d' .env
-# Enable Swoole with max workers for concurrency.
+# Enable Swoole with 1 worker to strictly test state isolation within a single process.
 # Swoole coroutines are enabled by default in Octane's Swoole server.
-echo 'SAIL_COMMAND="php artisan octane:start --server=swoole --host=0.0.0.0 --port=80 --workers=14 --task-workers=1"' >> .env
+echo 'SAIL_COMMAND="php artisan octane:start --server=swoole --host=0.0.0.0 --port=80 --workers=1"' >> .env
 
 echo "Restarting Sail with Octane (Swoole)..."
 ./vendor/bin/sail down

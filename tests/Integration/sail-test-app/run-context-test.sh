@@ -94,7 +94,7 @@ fi
 # 4. Restart with Octane enabled
 echo "Configuring Octane in .env..."
 sed -i '/SAIL_COMMAND=/d' .env
-echo 'SAIL_COMMAND="php artisan octane:start --server=frankenphp --host=0.0.0.0 --port=80 --admin-port=2019 --workers=2"' >> .env
+echo 'SAIL_COMMAND="php artisan octane:start --server=frankenphp --host=0.0.0.0 --port=80 --admin-port=2019 --workers=1"' >> .env
 
 echo "Restarting Sail with Octane (FrankenPHP)..."
 ./vendor/bin/sail down
