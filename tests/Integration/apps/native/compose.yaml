@@ -19,8 +19,8 @@ services:
             IGNITION_LOCAL_SITES_PATH: '${PWD}'
             SUPERVISOR_PHP_COMMAND: "${SAIL_COMMAND:-/usr/bin/php artisan serve --host=0.0.0.0 --port=80}"
         volumes:
-            - '.:/var/www/html'
-            - '../../../../:/var/www/html/vendor/josemontano1996/laravel-localization-suite'
+            - '../../../../:/var/www'
+        working_dir: /var/www/tests/Integration/apps/native
         networks:
             - sail
         depends_on: {}

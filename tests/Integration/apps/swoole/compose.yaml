@@ -19,8 +19,8 @@ services:
             IGNITION_LOCAL_SITES_PATH: '${PWD}'
             SUPERVISOR_PHP_COMMAND: "php artisan octane:start --server=swoole --host=0.0.0.0 --port=80 --workers=1"
         volumes:
-            - '.:/var/www/html'
-            - '../../../../:/var/www/html/vendor/josemontano1996/laravel-localization-suite'
+            - '../../../../:/var/www'
+        working_dir: /var/www/tests/Integration/apps/swoole
         networks:
             - sail
         depends_on: {}
