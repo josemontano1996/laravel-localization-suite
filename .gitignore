@@ -23,8 +23,6 @@ Thumbs.db
 .phpunit.result.cache
 coverage/
 .coverage
-
-# Build output
 dist/
 build/
 

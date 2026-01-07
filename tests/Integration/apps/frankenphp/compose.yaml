@@ -1,0 +1,29 @@
+services:
+    laravel.test:
+        build:
+            context: './vendor/laravel/sail/runtimes/${PHP_VERSION:-8.4}'
+            dockerfile: Dockerfile
+            args:
+                WWWGROUP: '${WWWGROUP}'
+        image: 'sail-${PHP_VERSION:-8.4}/app'
+        extra_hosts:
+            - 'host.docker.internal:host-gateway'
+        ports:
+            - '${APP_PORT:-80}:80'
+            - '${VITE_PORT:-5173}:${VITE_PORT:-5173}'
+        environment:
+            WWWUSER: '${WWWUSER}'
+            LARAVEL_SAIL: 1
+            XDEBUG_MODE: '${SAIL_XDEBUG_MODE:-off}'
+            XDEBUG_CONFIG: '${SAIL_XDEBUG_CONFIG:-client_host=host.docker.internal}'
+            IGNITION_LOCAL_SITES_PATH: '${PWD}'
+            SUPERVISOR_PHP_COMMAND: "php artisan octane:start --server=frankenphp --host=0.0.0.0 --port=80 --admin-port=2019 --workers=1"
+        volumes:
+            - '.:/var/www/html'
+            - '../../../:/var/www/josemontano1996/laravel-localization-suite'
+        networks:
+            - sail
+        depends_on: {  }
+networks:
+    sail:
+        driver: bridge
