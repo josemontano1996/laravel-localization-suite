@@ -86,6 +86,7 @@ while (count($pending) > 0 || count($in_flight) > 0) {
             'response' => $data,
             'raw' => $response,
             'http_code' => curl_getinfo($ch, CURLINFO_HTTP_CODE),
+            'curl_error' => curl_error($ch),
         ];
         
         curl_multi_remove_handle($multi, $ch);
@@ -120,7 +121,8 @@ foreach ($results as $i => $result) {
         }
     } else {
         $snippet = substr($response, 0, 100);
-        echo "[ERROR] Request $i ($locale): Invalid response (HTTP $http_code): $snippet...\n";
+        $curl_err = $result['curl_error'] ?? 'Unknown curl error';
+        echo "[ERROR] Request $i ($locale): Invalid response (HTTP $http_code), Curl Error: $curl_err, Snippet: $snippet...\n";
         $errors++;
     }
 }

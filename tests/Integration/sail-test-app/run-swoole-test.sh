@@ -84,7 +84,6 @@ echo "Ensuring Octane/Swoole are configured..."
 echo "Configuring Octane in .env..."
 sed -i '/SAIL_COMMAND=/d' .env
 # Enable Swoole with 1 worker to strictly test state isolation within a single process.
-# Swoole coroutines are enabled by default in Octane's Swoole server.
 echo 'SAIL_COMMAND="php artisan octane:start --server=swoole --host=0.0.0.0 --port=80 --workers=1"' >> .env
 
 echo "Restarting Sail with Octane (Swoole)..."
@@ -102,8 +101,6 @@ done
 
 # Verify Swoole environment
 if ! ./vendor/bin/sail exec laravel.test curl -s -I http://localhost:80 | grep -iq "swoole"; then
-    # Some versions of Octane/Swoole might not say "Swoole" in the Server header directly 
-    # but we can check if it's responding.
     echo "Checking server response headers..."
     ./vendor/bin/sail exec laravel.test curl -s -I http://localhost:80
 fi
