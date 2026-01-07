@@ -73,13 +73,16 @@ while ! ./vendor/bin/sail exec laravel.test curl -s -I http://localhost:80 > /de
     current_wait=$((current_wait + 2))
 done
 
-if ! ./vendor/bin/sail exec laravel.test curl -s -I http://localhost:80 > /dev/null; then
+if ! ./vendor/bin/sail exec laravel.test curl -s -I http://localhost:80 | grep -iq "FrankenPHP"; then
     echo "--------------------------------------------------"
-    echo "ERROR: Octane failed to start. Dumping logs:"
-    ./vendor/bin/sail logs --tail=100 laravel.test
+    echo "ERROR: Octane is running, but it doesn't seem to be using FrankenPHP."
+    echo "Please check your configuration."
+    ./vendor/bin/sail exec laravel.test curl -s -I http://localhost:80
     echo "--------------------------------------------------"
     exit 1
 fi
+
+echo "SUCCESS: FrankenPHP environment verified."
 
 echo "Clearing Laravel cache..."
 ./vendor/bin/sail artisan optimize:clear
