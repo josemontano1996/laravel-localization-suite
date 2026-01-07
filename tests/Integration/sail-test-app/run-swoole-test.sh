@@ -4,6 +4,8 @@ set -e
 # run-swoole-test.sh
 # Automates the setup and execution of the SWOOLE driver concurrency test using Octane/Swoole in WSL.
 
+START_TIME=$SECONDS
+
 echo "--------------------------------------------------"
 echo "Setting up environment for SWOOLE driver test (Octane/Swoole)..."
 echo "--------------------------------------------------"
@@ -107,3 +109,7 @@ if ! ./vendor/bin/sail php concurrent_bleedtest.php; then
 fi
 
 echo "Test complete."
+END_TIME=$SECONDS
+DURATION=$((END_TIME - START_TIME))
+echo "Total script duration: ${DURATION}s"
+echo "--------------------------------------------------"

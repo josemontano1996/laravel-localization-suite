@@ -4,6 +4,8 @@ set -e
 # run-native-test.sh
 # Automates the setup and execution of the native driver concurrency test in WSL.
 
+START_TIME=$SECONDS
+
 echo "--------------------------------------------------"
 echo "Setting up environment for NATIVE driver test..."
 echo "--------------------------------------------------"
@@ -72,3 +74,7 @@ if ! ./vendor/bin/sail php concurrent_bleedtest.php; then
 fi
 
 echo "Test complete."
+END_TIME=$SECONDS
+DURATION=$((END_TIME - START_TIME))
+echo "Total script duration: ${DURATION}s"
+echo "--------------------------------------------------"

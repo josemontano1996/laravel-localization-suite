@@ -4,6 +4,8 @@ set -e
 # run-context-test.sh
 # Automates the setup and execution of the CONTEXT driver concurrency test using Octane/FrankenPHP in WSL.
 
+START_TIME=$SECONDS
+
 echo "--------------------------------------------------"
 echo "Setting up environment for CONTEXT driver test (Octane/FrankenPHP)..."
 echo "--------------------------------------------------"
@@ -119,3 +121,7 @@ if ! ./vendor/bin/sail php concurrent_bleedtest.php; then
 fi
 
 echo "Test complete."
+END_TIME=$SECONDS
+DURATION=$((END_TIME - START_TIME))
+echo "Total script duration: ${DURATION}s"
+echo "--------------------------------------------------"

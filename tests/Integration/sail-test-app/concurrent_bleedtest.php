@@ -40,6 +40,8 @@ echo "Delay between requests: {$delay_ms}ms, Server Sleep: {$sleep_ms}ms\n";
 echo "Total Requests: $total_requests, Max Concurrency: $concurrency\n";
 echo "--------------------------------------------------\n";
 
+$start_time = microtime(true);
+
 // Prepare request list
 $pending = [];
 for ($i = 0; $i < $total_requests; $i++) {
@@ -95,6 +97,8 @@ while (count($pending) > 0 || count($in_flight) > 0) {
 }
 curl_multi_close($multi);
 
+$duration = round(microtime(true) - $start_time, 2);
+
 // Analyze results
 $bleeds = 0;
 $errors = 0;
@@ -122,6 +126,7 @@ foreach ($results as $i => $result) {
 $total = count($results);
 echo "\n--------------------------------------------------\n";
 echo "Summary: $total requests, $bleeds bleeds detected, $errors errors.\n";
+echo "Total Time: {$duration}s\n";
 if ($bleeds === 0 && $errors === 0) {
     echo "SUCCESS: No locale bleed detected.\n";
 } else {
