@@ -6,6 +6,19 @@ set -e
 
 START_TIME=$SECONDS
 
+# Default values
+TOTAL_REQUESTS=100
+CONCURRENCY=50
+
+# Parse flags
+while getopts "t:c:" opt; do
+  case $opt in
+    t) TOTAL_REQUESTS="$OPTARG" ;;
+    c) CONCURRENCY="$OPTARG" ;;
+    *) echo "Usage: $0 [-t total_requests] [-c concurrency]" >&2; exit 1 ;;
+  esac
+done
+
 echo "--------------------------------------------------"
 echo "Setting up environment for CONTEXT driver test (Octane/FrankenPHP)..."
 echo "--------------------------------------------------"
@@ -111,8 +124,8 @@ echo "Clearing Laravel cache..."
 ./vendor/bin/sail artisan optimize:clear
 
 # 5. Run the high-concurrency test inside container
-echo "Launching concurrency test (Context + Octane)..."
-if ! ./vendor/bin/sail php concurrent_bleedtest.php; then
+echo "Launching concurrency test (Context + Octane) ($TOTAL_REQUESTS requests, $CONCURRENCY concurrency)..."
+if ! ./vendor/bin/sail php concurrent_bleedtest.php -t "$TOTAL_REQUESTS" -c "$CONCURRENCY"; then
     echo "--------------------------------------------------"
     echo "ERROR: Test execution failed."
     echo "Dumping container logs for diagnosis:"

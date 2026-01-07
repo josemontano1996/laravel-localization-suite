@@ -10,8 +10,10 @@ $locales = [
     'fr',
 ];
 
-$total_requests = 100;
-$concurrency = 50; 
+$options = getopt("t:c:", ["total:", "concurrency:"]);
+$total_requests = (int) ($options['t'] ?? $options['total'] ?? 100);
+$concurrency = (int) ($options['c'] ?? $options['concurrency'] ?? 50);
+
 $delay_ms = 100; // Delay between firing each request
 $sleep_ms = $delay_ms * 3; // Time the server will sleep to ensure overlap
 
