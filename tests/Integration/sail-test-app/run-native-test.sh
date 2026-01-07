@@ -23,6 +23,23 @@ if [ -f .env ]; then
     cp .env .env.bak
 fi
 
+# Cleanup function to be called on exit
+cleanup() {
+    echo "--------------------------------------------------"
+    echo "Cleaning up..."
+    ./vendor/bin/sail down
+
+    # Restore .env backup if it existed
+    if [ -f .env.bak ]; then
+        mv .env.bak .env
+    fi
+    echo "Done."
+    echo "--------------------------------------------------"
+}
+
+# Set trap to ensure cleanup runs even on error
+trap cleanup EXIT
+
 # Ensure LOCALIZATION_DRIVER is set to native
 if grep -q "LOCALIZATION_DRIVER=" .env; then
     sed -i 's/LOCALIZATION_DRIVER=.*/LOCALIZATION_DRIVER=native/' .env
@@ -54,15 +71,4 @@ if ! ./vendor/bin/sail php concurrent_bleedtest.php; then
     echo "--------------------------------------------------"
 fi
 
-# 5. Cleanup
-echo "--------------------------------------------------"
-echo "Cleaning up..."
-./vendor/bin/sail down
-
-# Restore .env backup if it existed
-if [ -f .env.bak ]; then
-    mv .env.bak .env
-fi
-
 echo "Test complete."
-echo "--------------------------------------------------"

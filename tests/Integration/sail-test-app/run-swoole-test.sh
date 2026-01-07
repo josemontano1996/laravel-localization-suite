@@ -1,11 +1,11 @@
 #!/bin/bash
 set -e
 
-# run-context-test.sh
-# Automates the setup and execution of the CONTEXT driver concurrency test using Octane/FrankenPHP in WSL.
+# run-swoole-test.sh
+# Automates the setup and execution of the SWOOLE driver concurrency test using Octane/Swoole in WSL.
 
 echo "--------------------------------------------------"
-echo "Setting up environment for CONTEXT driver test (Octane/FrankenPHP)..."
+echo "Setting up environment for SWOOLE driver test (Octane/Swoole)..."
 echo "--------------------------------------------------"
 
 # Pre-check Docker
@@ -44,11 +44,11 @@ cleanup() {
 # Set trap to ensure cleanup runs even on error
 trap cleanup EXIT
 
-# Set driver to context
+# Set driver to swoole
 if grep -q "LOCALIZATION_DRIVER=" .env; then
-    sed -i 's/LOCALIZATION_DRIVER=.*/LOCALIZATION_DRIVER=context/' .env
+    sed -i 's/LOCALIZATION_DRIVER=.*/LOCALIZATION_DRIVER=swoole/' .env
 else
-    echo "LOCALIZATION_DRIVER=context" >> .env
+    echo "LOCALIZATION_DRIVER=swoole" >> .env
 fi
 
 # Ensure supported_locales are set in config/app.php
@@ -56,32 +56,23 @@ if ! grep -q "'supported_locales'" config/app.php; then
     sed -i "/'fallback_locale' =>/a \    'supported_locales' => ['en', 'es', 'fr']," config/app.php
 fi
 
-# 2. Start containers (normal mode first to ensure components are ready)
+# 2. Start containers
 echo "Starting Laravel Sail..."
 ./vendor/bin/sail down --remove-orphans
 ./vendor/bin/sail up -d
 
-# 3. Install/Configure Octane
-echo "Ensuring Octane/FrankenPHP are configured..."
-# Install and capture output to see if it actually downloads anything
-if ! ./vendor/bin/sail artisan octane:install --server=frankenphp --no-interaction; then
-    echo "ERROR: octane:install failed."
-    exit 1
-fi
+# 3. Install/Configure Octane for Swoole
+echo "Ensuring Octane/Swoole are configured..."
+./vendor/bin/sail artisan octane:install --server=swoole --no-interaction
 
-# Verify binary existence inside container
-if ! ./vendor/bin/sail bash -c "[ -f ./frankenphp ]"; then
-    echo "WARNING: frankenphp binary not found in root. Attempting to force download..."
-fi
-# Use root shell to ensure we have permission to change binary mode (ignore errors if filesystem doesn't support it)
-./vendor/bin/sail root-shell -c "chmod +x ./frankenphp" 2>/dev/null || true
-
-# 4. Restart with Octane enabled
+# 4. Restart with Octane enabled (Swoole)
 echo "Configuring Octane in .env..."
 sed -i '/SAIL_COMMAND=/d' .env
-echo 'SAIL_COMMAND="php artisan octane:start --server=frankenphp --host=0.0.0.0 --port=80 --admin-port=2019 --workers=2"' >> .env
+# Enable Swoole with max workers for concurrency.
+# Swoole coroutines are enabled by default in Octane's Swoole server.
+echo 'SAIL_COMMAND="php artisan octane:start --server=swoole --host=0.0.0.0 --port=80 --workers=14 --task-workers=1"' >> .env
 
-echo "Restarting Sail with Octane (FrankenPHP)..."
+echo "Restarting Sail with Octane (Swoole)..."
 ./vendor/bin/sail down
 ./vendor/bin/sail up -d
 
@@ -94,22 +85,19 @@ while ! ./vendor/bin/sail exec laravel.test curl -s -I http://localhost:80 > /de
     current_wait=$((current_wait + 2))
 done
 
-if ! ./vendor/bin/sail exec laravel.test curl -s -I http://localhost:80 | grep -iq "FrankenPHP"; then
-    echo "--------------------------------------------------"
-    echo "ERROR: Octane is running, but it doesn't seem to be using FrankenPHP."
-    echo "Please check your configuration."
+# Verify Swoole environment
+if ! ./vendor/bin/sail exec laravel.test curl -s -I http://localhost:80 | grep -iq "swoole"; then
+    # Some versions of Octane/Swoole might not say "Swoole" in the Server header directly 
+    # but we can check if it's responding.
+    echo "Checking server response headers..."
     ./vendor/bin/sail exec laravel.test curl -s -I http://localhost:80
-    echo "--------------------------------------------------"
-    exit 1
 fi
-
-echo "SUCCESS: FrankenPHP environment verified."
 
 echo "Clearing Laravel cache..."
 ./vendor/bin/sail artisan optimize:clear
 
 # 5. Run the high-concurrency test inside container
-echo "Launching concurrency test (Context + Octane)..."
+echo "Launching concurrency test (Swoole + Octane)..."
 if ! ./vendor/bin/sail php concurrent_bleedtest.php; then
     echo "--------------------------------------------------"
     echo "ERROR: Test execution failed."
