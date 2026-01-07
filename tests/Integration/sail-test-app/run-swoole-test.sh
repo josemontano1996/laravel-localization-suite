@@ -33,9 +33,12 @@ if ! docker info > /dev/null 2>&1; then
 fi
 
 # 1. Setup environment
-# Backup .env if it exists
+# Backup .env and config/octane.php if they exist
 if [ -f .env ]; then
     cp .env .env.bak
+fi
+if [ -f config/octane.php ]; then
+    cp config/octane.php config/octane.php.bak
 fi
 
 # Cleanup function to be called on exit
@@ -48,9 +51,12 @@ cleanup() {
     fi
     ./vendor/bin/sail down
 
-    # Restore .env backup if it existed
+    # Restore backups
     if [ -f .env.bak ]; then
         mv .env.bak .env
+    fi
+    if [ -f config/octane.php.bak ]; then
+        mv config/octane.php.bak config/octane.php
     fi
     echo "Done."
     echo "--------------------------------------------------"
@@ -79,6 +85,12 @@ echo "Starting Laravel Sail..."
 # 3. Install/Configure Octane for Swoole
 echo "Ensuring Octane/Swoole are configured..."
 ./vendor/bin/sail artisan octane:install --server=swoole --no-interaction
+
+# Inject Swoole hook flags into config/octane.php if not present
+if ! grep -q "'hook_flags' => SWOOLE_HOOK_ALL" config/octane.php; then
+    echo "Enabling all Swoole hooks in config/octane.php..."
+    sed -i "/return \[/a \    'swoole' => [\n        'options' => [\n            'hook_flags' => SWOOLE_HOOK_ALL,\n        ],\n    ]," config/octane.php
+fi
 
 # 4. Restart with Octane enabled (Swoole)
 echo "Configuring Octane in .env..."
