@@ -20,7 +20,7 @@ services:
             SUPERVISOR_PHP_COMMAND: "${SAIL_COMMAND:-/usr/bin/php artisan serve --host=0.0.0.0 --port=80}"
         volumes:
             - '.:/var/www/html'
-            - '../../../../:/var/www/josemontano1996/laravel-localization-suite'
+            - '../../../../:/var/www/html/vendor/josemontano1996/laravel-localization-suite'
         networks:
             - sail
         depends_on: {}

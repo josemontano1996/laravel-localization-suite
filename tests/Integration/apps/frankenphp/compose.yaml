@@ -20,7 +20,7 @@ services:
             SUPERVISOR_PHP_COMMAND: "php artisan octane:start --server=frankenphp --host=0.0.0.0 --port=80 --admin-port=2019 --workers=1"
         volumes:
             - '.:/var/www/html'
-            - '../../../../:/var/www/josemontano1996/laravel-localization-suite'
+            - '../../../../:/var/www/html/vendor/josemontano1996/laravel-localization-suite'
         networks:
             - sail
         depends_on: {}
