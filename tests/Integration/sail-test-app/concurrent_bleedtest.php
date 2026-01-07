@@ -81,6 +81,7 @@ while (count($pending) > 0 || count($in_flight) > 0) {
             'locale' => $locale,
             'response' => $data,
             'raw' => $response,
+            'http_code' => curl_getinfo($ch, CURLINFO_HTTP_CODE),
         ];
         
         curl_multi_remove_handle($multi, $ch);
@@ -100,14 +101,21 @@ $errors = 0;
 foreach ($results as $i => $result) {
     $locale = $result['locale'];
     $data = $result['response'];
-    if (! is_array($data) || ! isset($data['bleeded'])) {
-        echo "[ERROR] Request $i ($locale): Invalid response: ".$result['raw']."\n";
+    $response = $result['raw'];
+    $http_code = $result['http_code'];
+
+    if ($data && isset($data['bleeded'])) {
+        $requested = $locale;
+        $actual = $data['context_locale'] ?? 'unknown';
+        
+        if ($data['bleeded']) {
+            echo "[BLEED] $requested: context_locale=$actual (expected $requested)\n";
+            $bleeds++;
+        }
+    } else {
+        $snippet = substr($response, 0, 100);
+        echo "[ERROR] Request $i ($locale): Invalid response (HTTP $http_code): $snippet...\n";
         $errors++;
-        continue;
-    }
-    if ($data['bleeded']) {
-        $bleeds++;
-        echo "[BLEED] $locale: context_locale={$data['context_locale']} (expected $locale)\n";
     }
 }
 

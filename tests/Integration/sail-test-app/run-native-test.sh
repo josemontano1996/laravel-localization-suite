@@ -2,7 +2,7 @@
 set -e
 
 # run-native-test.sh
-# Automates the setup and execution of the native driver concurrency test.
+# Automates the setup and execution of the native driver concurrency test in WSL.
 
 echo "--------------------------------------------------"
 echo "Setting up environment for NATIVE driver test..."
@@ -12,7 +12,7 @@ echo "--------------------------------------------------"
 if ! docker info > /dev/null 2>&1; then
     echo "--------------------------------------------------"
     echo "ERROR: Docker is not running or not accessible."
-    echo "Please ensure Docker Desktop is started and the background service is running."
+    echo "Please ensure Docker Desktop is started and integrated with WSL."
     echo "--------------------------------------------------"
     exit 1
 fi
@@ -22,10 +22,6 @@ fi
 if [ -f .env ]; then
     cp .env .env.bak
 fi
-
-# Export Sail defaults for direct Docker Compose usage
-export WWWGROUP=${WWWGROUP:-1000}
-export WWWUSER=${WWWUSER:-1000}
 
 # Ensure LOCALIZATION_DRIVER is set to native
 if grep -q "LOCALIZATION_DRIVER=" .env; then
@@ -40,25 +36,19 @@ if ! grep -q "'supported_locales'" config/app.php; then
 fi
 
 # 2. Start/Restart containers
-echo "Restarting Docker containers..."
-MSYS_NO_PATHCONV=1 docker compose down --remove-orphans
-if ! MSYS_NO_PATHCONV=1 docker compose up -d; then
-    echo "--------------------------------------------------"
-    echo "ERROR: Failed to start Docker containers."
-    echo "Check if port 80 is already in use by another application."
-    echo "--------------------------------------------------"
-    exit 1
-fi
+echo "Restarting Laravel Sail..."
+./vendor/bin/sail down --remove-orphans
+./vendor/bin/sail up -d
 
 # 3. Wait for the server to be ready and clear cache
 echo "Waiting for Sail containers to be ready..."
 sleep 5
 echo "Clearing Laravel cache..."
-MSYS_NO_PATHCONV=1 docker compose exec laravel.test php artisan optimize:clear
+./vendor/bin/sail artisan optimize:clear
 
 # 4. Run the high-concurrency test inside container
 echo "Launching concurrency test inside container..."
-if ! MSYS_NO_PATHCONV=1 docker compose exec laravel.test php concurrent_bleedtest.php; then
+if ! ./vendor/bin/sail php concurrent_bleedtest.php; then
     echo "--------------------------------------------------"
     echo "ERROR: Test execution failed."
     echo "--------------------------------------------------"
@@ -67,7 +57,7 @@ fi
 # 5. Cleanup
 echo "--------------------------------------------------"
 echo "Cleaning up..."
-docker compose down
+./vendor/bin/sail down
 
 # Restore .env backup if it existed
 if [ -f .env.bak ]; then

@@ -1,0 +1,108 @@
+#!/bin/bash
+set -e
+
+# run-context-test.sh
+# Automates the setup and execution of the CONTEXT driver concurrency test using Octane/FrankenPHP in WSL.
+
+echo "--------------------------------------------------"
+echo "Setting up environment for CONTEXT driver test (Octane/FrankenPHP)..."
+echo "--------------------------------------------------"
+
+# Pre-check Docker
+if ! docker info > /dev/null 2>&1; then
+    echo "--------------------------------------------------"
+    echo "ERROR: Docker is not running or not accessible."
+    echo "Please ensure Docker Desktop is started and integrated with WSL."
+    echo "--------------------------------------------------"
+    exit 1
+fi
+
+# 1. Setup environment
+# Backup .env if it exists
+if [ -f .env ]; then
+    cp .env .env.bak
+fi
+
+# Set driver to context
+if grep -q "LOCALIZATION_DRIVER=" .env; then
+    sed -i 's/LOCALIZATION_DRIVER=.*/LOCALIZATION_DRIVER=context/' .env
+else
+    echo "LOCALIZATION_DRIVER=context" >> .env
+fi
+
+# Ensure supported_locales are set in config/app.php
+if ! grep -q "'supported_locales'" config/app.php; then
+    sed -i "/'fallback_locale' =>/a \    'supported_locales' => ['en', 'es', 'fr']," config/app.php
+fi
+
+# 2. Start containers (normal mode first to ensure components are ready)
+echo "Starting Laravel Sail..."
+./vendor/bin/sail down --remove-orphans
+./vendor/bin/sail up -d
+
+# 3. Install/Configure Octane
+echo "Ensuring Octane/FrankenPHP are configured..."
+# Install and capture output to see if it actually downloads anything
+if ! ./vendor/bin/sail artisan octane:install --server=frankenphp --no-interaction; then
+    echo "ERROR: octane:install failed."
+    exit 1
+fi
+
+# Verify binary existence inside container
+if ! ./vendor/bin/sail bash -c "[ -f ./frankenphp ]"; then
+    echo "WARNING: frankenphp binary not found in root. Attempting to force download..."
+fi
+# Use root shell to ensure we have permission to change binary mode (ignore errors if filesystem doesn't support it)
+./vendor/bin/sail root-shell -c "chmod +x ./frankenphp" 2>/dev/null || true
+
+# 4. Restart with Octane enabled
+echo "Configuring Octane in .env..."
+sed -i '/SAIL_COMMAND=/d' .env
+echo 'SAIL_COMMAND="php artisan octane:start --server=frankenphp --host=0.0.0.0 --port=80 --admin-port=2019 --workers=2"' >> .env
+
+echo "Restarting Sail with Octane (FrankenPHP)..."
+./vendor/bin/sail down
+./vendor/bin/sail up -d
+
+echo "Waiting for Octane to be ready (20s)..."
+current_wait=0
+timeout=20
+while ! ./vendor/bin/sail exec laravel.test curl -s -I http://localhost:80 > /dev/null && [ $current_wait -lt $timeout ]; do
+    echo "Wait for port 80... ($current_wait/$timeout)"
+    sleep 2
+    current_wait=$((current_wait + 2))
+done
+
+if ! ./vendor/bin/sail exec laravel.test curl -s -I http://localhost:80 > /dev/null; then
+    echo "--------------------------------------------------"
+    echo "ERROR: Octane failed to start. Dumping logs:"
+    ./vendor/bin/sail logs --tail=100 laravel.test
+    echo "--------------------------------------------------"
+    exit 1
+fi
+
+echo "Clearing Laravel cache..."
+./vendor/bin/sail artisan optimize:clear
+
+# 5. Run the high-concurrency test inside container
+echo "Launching concurrency test (Context + Octane)..."
+if ! ./vendor/bin/sail php concurrent_bleedtest.php; then
+    echo "--------------------------------------------------"
+    echo "ERROR: Test execution failed."
+    echo "Dumping container logs for diagnosis:"
+    ./vendor/bin/sail logs --tail=50 laravel.test
+    echo "--------------------------------------------------"
+fi
+
+# 6. Cleanup
+echo "--------------------------------------------------"
+echo "Cleaning up..."
+./vendor/bin/sail down
+
+# Restore .env backup if it existed
+if [ -f .env.bak ]; then
+    mv .env.bak .env
+fi
+
+echo "Test complete."
+echo "--------------------------------------------------"
