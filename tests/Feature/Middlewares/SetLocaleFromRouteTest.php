@@ -143,7 +143,6 @@ describe('SetLocaleFromRoute Middleware', function () {
             Route::middleware([SetLocaleFromRoute::class, SetLocalizedHeaders::class])
                 ->get('/nolocale1', function () {
                     $service = app(LocalizationServiceContract::class);
-
                     return response()->json(['locale' => $service->getCurrentLocale()]);
                 });
 
@@ -206,10 +205,10 @@ describe('SetLocaleFromRoute Middleware', function () {
                     return response()->json(['locale' => $service->getCurrentLocale()]);
                 });
 
-            $response = $this->get('/optional-test', ['Accept-Language' => 'en']);
+            $response = $this->get('/optional-test', ['Accept-Language' => 'fr']);
 
             expect($response->status())->toBe(200);
-            expect($response->json('locale'))->toBe('en');
+            expect($response->json('locale'))->toBe('fr');
         });
 
         it('works with multiple route parameters', function () {
@@ -232,11 +231,11 @@ describe('SetLocaleFromRoute Middleware', function () {
                     return 'ok';
                 });
 
-            $response = $this->get('/de/profile/1/settings/privacy', ['Accept-Language' => 'en']);
+            $response = $this->get('/de/profile/1/settings/privacy', ['Accept-Language' => 'fr']);
 
             expect($response->status())->toBe(302);
             $location = $response->headers->get('location');
-            expect($location)->toContain('/en/profile/1/settings/privacy');
+            expect($location)->toContain('/fr/profile/1/settings/privacy');
         });
     });
 

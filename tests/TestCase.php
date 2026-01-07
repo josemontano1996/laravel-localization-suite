@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Tests;
 
 use Illuminate\Support\Facades\Route;
+use Josemontano1996\LaravelLocalizationSuite\Contracts\LocalizationServiceContract;
 use Josemontano1996\LaravelLocalizationSuite\Middlewares\SetLocaleFromRoute;
 use Josemontano1996\LaravelLocalizationSuite\Middlewares\SetLocalizedHeaders;
 use Josemontano1996\LaravelLocalizationSuite\Providers\LocalizationServiceProvider;
@@ -47,15 +48,15 @@ abstract class TestCase extends BaseTestCase
         // Routes with {locale} in path - constrained to valid locales only
         Route::get('/{locale}', function () {
             return 'home';
-        })->name('home')->where('locale', 'en|es|fr');
+        })->name('home');
 
         Route::get('/{locale}/post/{id}', function () {
             return 'post';
-        })->name('post.show')->where('locale', 'en|es|fr');
+        })->name('post.show');
 
         Route::get('/{locale}/user/{id}', function () {
             return 'user';
-        })->name('user.profile')->where('locale', 'en|es|fr');
+        })->name('user.profile');
 
         // Routes without {locale} - locale becomes query parameter
         Route::get('/api/status', function () {
