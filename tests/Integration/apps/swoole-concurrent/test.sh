@@ -10,12 +10,21 @@ if [ ! -d "vendor" ]; then
     composer install
 fi
 
+# 0.1. Ensure RoadRunner binary is installed
+if [ ! -f "rr" ]; then
+    echo "RoadRunner binary not found. Installing..."
+    ./vendor/bin/sail up -d
+    # Answer 'no' to the .rr.yaml configuration prompt since Laravel Octane manages RoadRunner config
+    ./vendor/bin/sail exec laravel.test bash -c "cd /var/www/tests/Integration/apps/frankenphp && echo 'no' | ./vendor/bin/rr get-binary && chmod +x ./rr"
+    ./vendor/bin/sail down
+fi
+
 # 1. Start Sail
 ./vendor/bin/sail down
 ./vendor/bin/sail up -d
 
-# 2. Wait for Octane (FrankenPHP) to be ready
-echo "Waiting for Octane (FrankenPHP) to be ready..."
+# 2. Wait for Octane (RoadRunner) to be ready
+echo "Waiting for Octane (RoadRunner) to be ready..."
 timeout=30
 current_wait=0
 while ! ./vendor/bin/sail exec laravel.test curl -s -I http://localhost:80 > /dev/null && [ $current_wait -lt $timeout ]; do
