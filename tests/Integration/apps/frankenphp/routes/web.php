@@ -7,7 +7,7 @@ Route::get('/', function () {
 });
 
 Route::localized(function () {
-    Route::get('/bleed-test-native-laravel', function () {
+    Route::get('/bleed-test', function () {
         $requestedLocale = localization()->getCurrentLocale();
 
         $sleep = (int) request('sleep', 0);

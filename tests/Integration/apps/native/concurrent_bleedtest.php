@@ -54,7 +54,7 @@ function make_handle($locale, $sleep_ms)
 }
 
 echo "--------------------------------------------------\n";
-echo "Starting high-concurrency bleed test...\n";
+echo "Starting bleed test...\n";
 echo "Endpoint: $endpoint\n";
 echo "Delay between requests: {$delay_ms}ms, Server Sleep: {$sleep_ms}ms\n";
 echo "Total Requests: $total_requests, Max Concurrency: $concurrency\n";

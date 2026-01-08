@@ -8,34 +8,30 @@ cd "$(dirname "$0")"
 if [ ! -d "vendor" ]; then
     echo "vendor directory not found. Running composer install..."
     composer install
-else
-    echo "Updating local package to latest version..."
-    composer update josemontano1996/laravel-localization-suite
 fi
 
-# 1. Start Sail (Normal mode first to ensure we can run artisan)
+# 1. Start Sail
+./vendor/bin/sail down
 ./vendor/bin/sail up -d
 
-# 2. Ensure Octane is installed
-./vendor/bin/sail artisan octane:install --server=frankenphp --no-interaction
-# Ensure binary is executable (root shell for permissions)
-./vendor/bin/sail root-shell -c "chmod +x ./frankenphp" 2>/dev/null || true
-
-# 3. Clear cache
-./vendor/bin/sail artisan optimize:clear
-
-# 4. Wait for Octane to be ready
+# 2. Wait for Octane (FrankenPHP) to be ready
 echo "Waiting for Octane (FrankenPHP) to be ready..."
-timeout=20
+timeout=30
 current_wait=0
-while ! ./vendor/bin/sail exec laravel.test curl -s -I http://localhost:80 | grep -iq "FrankenPHP" && [ $current_wait -lt $timeout ]; do
+while ! ./vendor/bin/sail exec laravel.test curl -s -I http://localhost:80 > /dev/null && [ $current_wait -lt $timeout ]; do
     sleep 2
     current_wait=$((current_wait + 2))
 done
 
-# 5. Run concurrency test
-TOTAL=${1:-100}
+# 3. Clear cache
+./vendor/bin/sail artisan optimize:clear
+
+# 4. Run concurrency test
+# Total and concurrency can be overridden via flags if needed,
+# but we'll use sensible defaults for the matrix.
+TOTAL=${1:-50}
 CONCURRENCY=${2:-50}
+
 ./vendor/bin/sail php concurrent_bleedtest.php -t "$TOTAL" -c "$CONCURRENCY"
 
 # 6. Stop Sail

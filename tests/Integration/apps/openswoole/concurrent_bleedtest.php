@@ -18,7 +18,7 @@ $delay_ms = 100; // Delay between firing each request
 $sleep_ms = $delay_ms * 3; // Time the server will sleep to ensure overlap
 
 // Default port for Sail internal requests is 80
-$endpoint = 'http://localhost:80/%s/bleed-test-native-laravel'; 
+$endpoint = 'http://localhost:80/%s/bleed-test';
 
 $results = [];
 $handles = [];
@@ -36,7 +36,7 @@ function make_handle($locale, $sleep_ms)
 }
 
 echo "--------------------------------------------------\n";
-echo "Starting high-concurrency bleed test...\n";
+echo "Starting bleed test...\n";
 echo "Endpoint: $endpoint\n";
 echo "Delay between requests: {$delay_ms}ms, Server Sleep: {$sleep_ms}ms\n";
 echo "Total Requests: $total_requests, Max Concurrency: $concurrency\n";
@@ -58,10 +58,10 @@ while (count($pending) > 0 || count($in_flight) > 0) {
     while (count($in_flight) < $concurrency && count($pending) > 0) {
         $locale = array_shift($pending);
         $ch = make_handle($locale, $sleep_ms);
-        
+
         curl_multi_add_handle($multi, $ch);
         $in_flight[(int) $ch] = ['locale' => $locale];
-        
+
         // Precise delay between firing requests as requested
         if (count($pending) > 0) {
             usleep($delay_ms * 1000);
@@ -76,11 +76,11 @@ while (count($pending) > 0 || count($in_flight) > 0) {
     while ($info = curl_multi_info_read($multi)) {
         $ch = $info['handle'];
         $key = (int) $ch;
-        
+
         $locale = $in_flight[$key]['locale'];
         $response = curl_multi_getcontent($ch);
         $data = json_decode($response, true);
-        
+
         $results[] = [
             'locale' => $locale,
             'response' => $data,
@@ -88,7 +88,7 @@ while (count($pending) > 0 || count($in_flight) > 0) {
             'http_code' => curl_getinfo($ch, CURLINFO_HTTP_CODE),
             'curl_error' => curl_error($ch),
         ];
-        
+
         curl_multi_remove_handle($multi, $ch);
         curl_close($ch);
         unset($in_flight[$key]);
@@ -114,7 +114,7 @@ foreach ($results as $i => $result) {
     if ($data && isset($data['bleeded'])) {
         $requested = $locale;
         $actual = $data['context_locale'] ?? 'unknown';
-        
+
         if ($data['bleeded']) {
             echo "[BLEED] $requested: context_locale=$actual (expected $requested)\n";
             $bleeds++;
