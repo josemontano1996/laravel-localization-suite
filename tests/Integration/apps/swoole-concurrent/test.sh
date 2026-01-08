@@ -1,38 +1,30 @@
 #!/bin/bash
 set -e
 
-# Ensure we are in the script's directory
-cd "$(dirname "$0")"
+# Clear host-side artifacts
+rm -f storage/logs/octane-server-state.json
+rm -f bootstrap/cache/*.php
 
-# 0. Ensure package is up to date
-if [ ! -d "vendor" ]; then
-    echo "vendor directory not found. Running composer install..."
-    composer install
-fi
+echo "Starting Sail in-memory..."
+./vendor/bin/sail down -v
+./vendor/bin/sail up -d --build
 
-# 1. Start Sail
-./vendor/bin/sail down
-./vendor/bin/sail up -d
+# Crucial: Octane needs its binaries synced
+./vendor/bin/sail artisan octane:install --server=swoole --force
 
-# 2. Wait for Octane (Swoole) to be ready
-echo "Waiting for Octane (Swoole) to be ready..."
+echo "Waiting for Octane..."
 timeout=30
 current_wait=0
-while ! ./vendor/bin/sail exec laravel.test curl -s -I http://localhost:80 > /dev/null && [ $current_wait -lt $timeout ]; do
+while ! curl -s -I http://localhost > /dev/null && [ $current_wait -lt $timeout ]; do
     sleep 2
     current_wait=$((current_wait + 2))
+    # If we are failing, show the last few lines of the log to see WHY it's null
+    if [ $((current_wait % 10)) -eq 0 ]; then
+        ./vendor/bin/sail logs --tail=5
+    fi
 done
 
-# 3. Clear cache
-./vendor/bin/sail artisan optimize:clear
+echo "Running Concurrency Test (Array Mode)..."
+./vendor/bin/sail php concurrent_bleedtest.php -t 100 -c 50
 
-# 4. Run concurrency test
-# Total and concurrency can be overridden via flags if needed,
-# but we'll use sensible defaults for the matrix.
-TOTAL=${1:-50}
-CONCURRENCY=${2:-50}
-
-./vendor/bin/sail php concurrent_bleedtest.php -t "$TOTAL" -c "$CONCURRENCY"
-
-# 6. Stop Sail
 ./vendor/bin/sail down
