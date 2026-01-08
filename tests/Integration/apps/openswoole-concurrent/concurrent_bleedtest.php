@@ -10,11 +10,12 @@ $locales = [
     'fr',
 ];
 
-$options = getopt("t:c:", ["total:", "concurrency:"]);
+$options = getopt('t:c:o:', ['total:', 'concurrency:', 'timeout:']);
 $total_requests = (int) ($options['t'] ?? $options['total'] ?? 100);
 $concurrency = (int) ($options['c'] ?? $options['concurrency'] ?? 50);
+$timeout = (int) ($options['o'] ?? $options['timeout'] ?? 10);
 
-$delay_ms = 100; // Delay between firing each request
+$delay_ms = 50; // Delay between firing each request
 $sleep_ms = $delay_ms * 3; // Time the server will sleep to ensure overlap
 
 // Default port for Sail internal requests is 80
@@ -24,13 +25,30 @@ $results = [];
 $handles = [];
 $multi = curl_multi_init();
 
+// Determine server workers (defaults to 1) and compute a safe timeout
+$workers = (int) getenv('OCTANE_WORKERS');
+if ($workers < 1) {
+    $workers = 1;
+}
+
+// Conservative worst-case per-request time under single worker:
+// each request may wait for all previous ones (sleep_ms) plus injection delay.
+$estimated_max_per_request_sec = ($total_requests * ($sleep_ms + $delay_ms)) / (1000.0 * $workers);
+$safety_buffer_sec = 15; // extra buffer for container/network overhead
+$computed_timeout = (int) ceil(($estimated_max_per_request_sec * 2) + $safety_buffer_sec);
+
+// Ensure the client timeout is large enough to avoid timeouts.
+if ($timeout < $computed_timeout) {
+    $timeout = $computed_timeout;
+}
+
 function make_handle($locale, $sleep_ms)
 {
     global $endpoint;
-    $url = sprintf($endpoint, $locale) . "?sleep=$sleep_ms";
+    $url = sprintf($endpoint, $locale)."?sleep=$sleep_ms";
     $ch = curl_init($url);
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-    curl_setopt($ch, CURLOPT_TIMEOUT, 10);
+    curl_setopt($ch, CURLOPT_TIMEOUT, $GLOBALS['timeout']);
 
     return $ch;
 }
@@ -40,6 +58,9 @@ echo "Starting bleed test...\n";
 echo "Endpoint: $endpoint\n";
 echo "Delay between requests: {$delay_ms}ms, Server Sleep: {$sleep_ms}ms\n";
 echo "Total Requests: $total_requests, Max Concurrency: $concurrency\n";
+echo "Workers: {$workers}\n";
+echo "Estimated worst-case per-request: ".number_format($estimated_max_per_request_sec, 2)."s\n";
+echo "Client Timeout: {$timeout}s\n";
 echo "--------------------------------------------------\n";
 
 $start_time = microtime(true);

@@ -24,11 +24,6 @@ use Laravel\Octane\Listeners\StopWorkerIfNecessary;
 use Laravel\Octane\Octane;
 
 return [
-    'swoole' => [
-        'options' => [
-            'hook_flags' => SWOOLE_HOOK_ALL,
-        ],
-    ],
 
     /*
     |--------------------------------------------------------------------------

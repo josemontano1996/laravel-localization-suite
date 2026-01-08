@@ -1,40 +1,37 @@
 #!/bin/bash
 set -e
 
-# Ensure we are in the script's directory
-cd "$(dirname "$0")"
+# Clear host-side artifacts
+rm -f storage/logs/octane-server-state.json
+rm -f bootstrap/cache/*.php
 
-# 0. Ensure package is up to date
-if [ ! -d "vendor" ]; then
-    echo "vendor directory not found. Running composer install..."
-    composer install
-else
-    echo "Updating local package to latest version..."
-    composer update josemontano1996/laravel-localization-suite
-fi
+echo "Installing dependencies (no-scripts)..."
+composer install --no-scripts --no-interaction
 
-# 1. Start Sail
-./vendor/bin/sail up -d
+echo "Starting Sail in-memory..."
+./vendor/bin/sail down -v
+./vendor/bin/sail up -d --build
 
-# 2. Ensure Octane is installed
-./vendor/bin/sail artisan octane:install --server=swoole --no-interaction
+# Crucial: Octane needs its binaries synced
+./vendor/bin/sail artisan octane:install --server=swoole --force
 
-# 3. Clear cache
-./vendor/bin/sail artisan optimize:clear
+echo "Optimizing application for concurrency test..."
+./vendor/bin/sail artisan optimize
+./vendor/bin/sail artisan event:cache
 
-# 4. Wait for Octane (OpenSwoole) to be ready
-echo "Waiting for Octane (OpenSwoole) to be ready..."
-timeout=20
+echo "Waiting for Octane..."
+timeout=30
 current_wait=0
-while ! ./vendor/bin/sail exec laravel.test curl -s -I http://localhost:80 > /dev/null && [ $current_wait -lt $timeout ]; do
+while ! curl -s -I http://localhost > /dev/null && [ $current_wait -lt $timeout ]; do
     sleep 2
     current_wait=$((current_wait + 2))
+    # If we are failing, show the last few lines of the log to see WHY it's null
+    if [ $((current_wait % 10)) -eq 0 ]; then
+        ./vendor/bin/sail logs --tail=5
+    fi
 done
 
-# 5. Run concurrency test
-TOTAL=${1:-100}
-CONCURRENCY=${2:-50}
-./vendor/bin/sail php concurrent_bleedtest.php -t "$TOTAL" -c "$CONCURRENCY"
+echo "Running Concurrency Test (Array Mode)..."
+./vendor/bin/sail php concurrent_bleedtest.php -t 200 -c 50
 
-# 6. Stop Sail
 ./vendor/bin/sail down
