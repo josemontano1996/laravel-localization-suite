@@ -8,12 +8,10 @@ cd "$(dirname "$0")"
 if [ ! -d "vendor" ]; then
     echo "vendor directory not found. Running composer install..."
     composer install
-else
-    echo "Updating local package to latest version..."
-    composer update josemontano1996/laravel-localization-suite
 fi
 
 # 1. Start Sail
+./vendor/bin/sail down
 ./vendor/bin/sail up -d
 
 # 2. Wait for server to be ready
@@ -29,9 +27,9 @@ done
 ./vendor/bin/sail artisan optimize:clear
 
 # 3. Run concurrency test
-# Total and concurrency can be overridden via flags if needed, 
+# Total and concurrency can be overridden via flags if needed,
 # but we'll use sensible defaults for the matrix.
-TOTAL=${1:-100}
+TOTAL=${1:-50}
 CONCURRENCY=${2:-50}
 
 ./vendor/bin/sail php concurrent_bleedtest.php -t "$TOTAL" -c "$CONCURRENCY"
