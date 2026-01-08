@@ -15,7 +15,7 @@ $total_requests = (int) ($options['t'] ?? $options['total'] ?? 100);
 $concurrency = (int) ($options['c'] ?? $options['concurrency'] ?? 50);
 $timeout = (int) ($options['o'] ?? $options['timeout'] ?? 10);
 
-$delay_ms = 100; // Delay between firing each request
+$delay_ms = 50; // Delay between firing each request
 $sleep_ms = $delay_ms * 3; // Time the server will sleep to ensure overlap
 
 // Default port for Sail internal requests is 80
