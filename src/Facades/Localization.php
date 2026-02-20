@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Josemontano1996\LaravelLocalizationSuite\Facades;
 
 use Illuminate\Support\Facades\Facade;
