@@ -12,7 +12,7 @@ fi
 
 # 1. Start Sail
 ./vendor/bin/sail down
-./vendor/bin/sail up -d
+./vendor/bin/sail build --no-cache && ./vendor/bin/sail up -d
 
 # 2. Wait for server to be ready
 echo "Waiting for server to be ready..."

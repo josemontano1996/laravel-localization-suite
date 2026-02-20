@@ -7,16 +7,16 @@ services:
                 WWWGROUP: "${WWWGROUP}"
         image: "sail-${PHP_VERSION:-8.4}/app"
         extra_hosts:
-            - 'host.docker.internal:host-gateway'
+            - "host.docker.internal:host-gateway"
         ports:
-            - '${APP_PORT:-80}:80'
-            - '${VITE_PORT:-5173}:${VITE_PORT:-5173}'
+            - "${APP_PORT:-80}:80"
+            - "${VITE_PORT:-5173}:${VITE_PORT:-5173}"
         environment:
-            WWWUSER: '${WWWUSER}'
+            WWWUSER: "${WWWUSER}"
             LARAVEL_SAIL: 1
-            XDEBUG_MODE: '${SAIL_XDEBUG_MODE:-off}'
-            XDEBUG_CONFIG: '${SAIL_XDEBUG_CONFIG:-client_host=host.docker.internal}'
-            IGNITION_LOCAL_SITES_PATH: '${PWD}'
+            XDEBUG_MODE: "${SAIL_XDEBUG_MODE:-off}"
+            XDEBUG_CONFIG: "${SAIL_XDEBUG_CONFIG:-client_host=host.docker.internal}"
+            IGNITION_LOCAL_SITES_PATH: "${PWD}"
             OCTANE_WORKERS: 1
             SESSION_DRIVER: array
             CACHE_STORE: array
@@ -29,7 +29,7 @@ services:
             # Mount the REPO ROOT to /var/www so ../../../../src exists
             - "../../../../:/var/www"
         # Set the working directory to the specific app location
-        working_dir: /var/www/tests/Integration/apps/swoole-concurrent
+        working_dir: /var/www/tests/Integration/runtimes/swoole-concurrent
         networks:
             - sail
         depends_on: {}

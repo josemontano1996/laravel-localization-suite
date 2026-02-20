@@ -21,7 +21,7 @@ services:
             PHP_CLI_SERVER_WORKERS: "2"
         volumes:
             - "../../../../:/var/www"
-        working_dir: /var/www/tests/Integration/apps/native
+        working_dir: /var/www/tests/Integration/runtimes/native
         networks:
             - sail
         depends_on: {}
