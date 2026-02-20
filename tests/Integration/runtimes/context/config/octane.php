@@ -25,9 +25,9 @@ use Laravel\Octane\Octane;
 
 return [
     'swoole' => [
-        'options' => [
-            'hook_flags' => SWOOLE_HOOK_ALL,
-        ],
+        // 'options' => [
+        //     'hook_flags' => SWOOLE_HOOK_ALL,
+        // ],
     ],
 
     /*

@@ -4,22 +4,34 @@ set -e
 # Ensure we are in the script's directory
 cd "$(dirname "$0")"
 
-# 0. Ensure package is up to date
-if [ ! -d "vendor" ]; then
-    echo "vendor directory not found. Running composer install..."
-    composer install
-else
-    echo "Updating local package to latest version..."
-    composer update josemontano1996/laravel-localization-suite
+composer install --no-scripts --no-interaction
+
+# Ensure .env exists
+if [ ! -f ".env" ]; then
+    echo "Creating .env from .env.example"
+    cp .env.example .env
 fi
 
+
+# Ensure sqlite database file exists and is writable inside the runtime folder
+mkdir -p database
+if [ ! -f database/database.sqlite ]; then
+    echo "Creating database/database.sqlite"
+    touch database/database.sqlite
+fi
+chmod 0666 database/database.sqlite || true
+
 # 1. Start Sail
-./vendor/bin/sail up -d
+./vendor/bin/sail down
+./vendor/bin/sail build --no-cache && ./vendor/bin/sail up -d
 
 # 2. Ensure Octane is installed
 ./vendor/bin/sail artisan octane:install --server=swoole --no-interaction
 
-# 3. Clear cache
+# Generate application key (if missing) and run migrations before clearing caches
+./vendor/bin/sail artisan key:generate --force || true
+./vendor/bin/sail artisan migrate --force || true
+
 ./vendor/bin/sail artisan optimize:clear
 
 # 4. Wait for Octane (Swoole) to be ready

@@ -5,10 +5,7 @@ set -e
 cd "$(dirname "$0")"
 
 # 0. Ensure package is up to date
-if [ ! -d "vendor" ]; then
-    echo "vendor directory not found. Running composer install..."
-    composer install
-fi
+composer install --no-scripts --no-interaction
 
 # Ensure .env exists
 if [ ! -f ".env" ]; then

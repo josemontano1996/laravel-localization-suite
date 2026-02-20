@@ -10,7 +10,7 @@ Route::localized(function () {
     Route::get('/bleed-test', function () {
         $requestedLocale = localization()->getCurrentLocale();
 
-        $sleep = (int) request('sleep', 0);
+        $sleep = (int) request('sleep', 1);
         if ($sleep > 0) {
             usleep($sleep * 1000); // convert ms to us
         }
