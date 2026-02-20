@@ -10,6 +10,20 @@ if [ ! -d "vendor" ]; then
     composer install
 fi
 
+# Ensure .env exists
+if [ ! -f ".env" ]; then
+    echo "Creating .env from .env.example"
+    cp .env.example .env
+fi
+
+# Ensure sqlite database file exists and is writable inside the runtime folder
+mkdir -p database
+if [ ! -f database/database.sqlite ]; then
+    echo "Creating database/database.sqlite"
+    touch database/database.sqlite
+fi
+chmod 0666 database/database.sqlite || true
+
 # 1. Start Sail
 ./vendor/bin/sail down
 ./vendor/bin/sail build --no-cache && ./vendor/bin/sail up -d
@@ -23,7 +37,10 @@ while ! ./vendor/bin/sail exec laravel.test curl -s -I http://localhost:80 > /de
     current_wait=$((current_wait + 2))
 done
 
-# 3. Clear cache
+# Generate application key (if missing) and run migrations before clearing caches
+./vendor/bin/sail artisan key:generate --force || true
+./vendor/bin/sail artisan migrate --force || true
+
 ./vendor/bin/sail artisan optimize:clear
 
 # 3. Run concurrency test
