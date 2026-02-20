@@ -20,7 +20,7 @@ services:
             SUPERVISOR_PHP_COMMAND: "php artisan octane:start --server=swoole --host=0.0.0.0 --port=80 --workers=1"
         volumes:
             - "../../../../:/var/www"
-        working_dir: /var/www/tests/Integration/runtimes/swoole
+        working_dir: /var/www/tests/Integration/runtimes/context
         networks:
             - sail
         depends_on: {}
