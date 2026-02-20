@@ -59,7 +59,7 @@ echo "Endpoint: $endpoint\n";
 echo "Delay between requests: {$delay_ms}ms, Server Sleep: {$sleep_ms}ms\n";
 echo "Total Requests: $total_requests, Max Concurrency: $concurrency\n";
 echo "Workers: {$workers}\n";
-echo "Estimated worst-case per-request: ".number_format($estimated_max_per_request_sec, 2)."s\n";
+echo 'Estimated worst-case per-request: '.number_format($estimated_max_per_request_sec, 2)."s\n";
 echo "Client Timeout: {$timeout}s\n";
 echo "--------------------------------------------------\n";
 

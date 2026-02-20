@@ -10,7 +10,7 @@ $locales = [
     'fr',
 ];
 
-$options = getopt("t:c:", ["total:", "concurrency:"]);
+$options = getopt('t:c:', ['total:', 'concurrency:']);
 $total_requests = (int) ($options['t'] ?? $options['total'] ?? 100);
 $concurrency = (int) ($options['c'] ?? $options['concurrency'] ?? 50);
 
@@ -27,7 +27,7 @@ $multi = curl_multi_init();
 function make_handle($locale, $sleep_ms)
 {
     global $endpoint;
-    $url = sprintf($endpoint, $locale) . "?sleep=$sleep_ms";
+    $url = sprintf($endpoint, $locale)."?sleep=$sleep_ms";
     $ch = curl_init($url);
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
     curl_setopt($ch, CURLOPT_TIMEOUT, 10);
