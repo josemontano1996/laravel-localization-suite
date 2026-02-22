@@ -33,7 +33,7 @@ Enhancement suggestions are welcome! Please provide:
 2. **Follow the development setup** below
 3. **Make your changes** following our coding standards
 4. **Add tests** for any new functionality
-5. **Ensure all tests pass** and static analysis is clean
+5. **Ensure all tests pass, including the integrations tests**. To run them you must have docker running on your machine and execute the test.sh of each runtime.
 6. **Update documentation** if needed (README, docblocks, etc.)
 7. **Clearly state breaking changes** in the PR description if your changes affect existing behavior
 8. **Submit your pull request** - the [PR template](.github/PULL_REQUEST_TEMPLATE.md) will guide you through the required information

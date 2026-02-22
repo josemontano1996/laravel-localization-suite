@@ -1,14 +1,15 @@
 # Laravel Localization Suite
 
-A comprehensive, **concurrent-safe** localization package for Laravel 12+ with first-class driver support for **Laravel Octane**, **Swoole**, and **OpenSwoole**.
+A comprehensive, runtime safe, localization package for Laravel 12+ with first-class driver support for **Laravel Octane**, **Swoole**, and **OpenSwoole**.
 
 [![PHP Version](https://img.shields.io/badge/php-%5E8.4-blue)](https://php.net)
 [![Laravel Version](https://img.shields.io/badge/laravel-12.x-red)](https://laravel.com)
 
 ## ✨ Features
 
-- **Driver-based architecture** — Swap between Native, Context, Swoole, or OpenSwoole drivers
+- **Driver-based architecture** — Swap between Native, Context, Swoole, or OpenSwoole drivers depending on your needs.
 - **Octane-ready** — Octane-safe drivers grant locale isolation preventing cross-request bleed
+- **Concurrency safe drivers** — Swoole and OpenSwoole drivers are completely concurrency safe, meaning they support multiple concurrent requests per worker and supporting all Swoole based HOOKS.
 - **Localized routing** — Simple locale-prefixed route groups with automatic detection
 - **Middlewares** - Useful middlewares for smart locale detection with metadata integration for best SEO practices
 - **Blade directives** — `@t`, `@route`, `@locale`, `@currency`, `@date` and more
@@ -271,7 +272,7 @@ LOCALIZATION_DRIVER=native
 
 ### Context Driver
 
-Uses Laravel 11+ `Context` facade for request-isolated state. Safe for concurrent requests.
+Uses Laravel 11+ `Context` facade for request-isolated state. This is safe for regular Octane environments.
 
 ```env
 LOCALIZATION_DRIVER=context
@@ -279,7 +280,7 @@ LOCALIZATION_DRIVER=context
 
 ### Swoole Driver
 
-Uses Swoole's coroutine context. Required for **Laravel Octane with Swoole**.
+Uses Swoole's coroutine context. Required when enabling HOOKS_ALL flag for true per worker concurrency in **Laravel Octane with Swoole**.
 
 ```env
 LOCALIZATION_DRIVER=swoole
@@ -287,7 +288,7 @@ LOCALIZATION_DRIVER=swoole
 
 ### OpenSwoole Driver
 
-Uses OpenSwoole's coroutine context.
+Uses OpenSwoole's coroutine context. Required when enabling HOOKS_ALL flag for true per worker concurrency in **Laravel Octane with OpenSwoole**.
 
 ```env
 LOCALIZATION_DRIVER=openswoole
