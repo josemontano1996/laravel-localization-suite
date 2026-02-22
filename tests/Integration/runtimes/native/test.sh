@@ -5,7 +5,7 @@ set -e
 cd "$(dirname "$0")"
 
 # 0. Ensure package is up to date
-composer install --no-scripts --no-interaction
+composer update --no-scripts --no-interaction
 
 # Ensure .env exists
 if [ ! -f ".env" ]; then
@@ -23,7 +23,7 @@ chmod 0666 database/database.sqlite || true
 
 # 1. Start Sail
 ./vendor/bin/sail down
-./vendor/bin/sail build --no-cache && ./vendor/bin/sail up -d
+./vendor/bin/sail build && ./vendor/bin/sail up -d
 
 # 2. Wait for server to be ready
 echo "Waiting for server to be ready..."
@@ -43,8 +43,8 @@ done
 # 3. Run concurrency test
 # Total and concurrency can be overridden via flags if needed,
 # but we'll use sensible defaults for the matrix.
-TOTAL=${1:-50}
-CONCURRENCY=${2:-50}
+TOTAL=${1:-200}
+CONCURRENCY=${2:-11}
 
 ./vendor/bin/sail php concurrent_bleedtest.php -t "$TOTAL" -c "$CONCURRENCY"
 
