@@ -10,13 +10,16 @@ Use this skill when working with a Laravel application that has `josemontano1996
 
 ## Features & Usage
 
-### 1. Choosing the Correct Driver
+### 1. Auto-Discovery & Registration
+The package utilizes Laravel's Package Auto-Discovery. When installed, `LocalizationServiceProvider` and the `Localization` facade are registered automatically. No manual configuration in `bootstrap/providers.php` or `config/app.php` is necessary.
+
+### 2. Choosing the Correct Driver
 Before interacting with the localization service, ensure the project is using the correct driver in `config/localization.php` for its environment:
 - **`native`**: Standard PHP-FPM environments.
 - **`context`**: General Laravel 11+ environments.
 - **`swoole` / `openswoole`**: **Truly concurrency safe**. Essential for Laravel Octane environments using Swoole or OpenSwoole where concurrent requests are handled by the same worker (e.g., when hooks like `HOOKS_ALL` are enabled). They use Coroutine Contexts to prevent state bleed.
 
-### 2. Locale Detection and Setting
+### 3. Locale Detection and Setting
 
 Determine the best locale based on browser headers and supported languages:
 
@@ -27,7 +30,7 @@ $bestMatch = request()->preferredLocale($supported);
 localization()->setCurrentLocale($bestMatch);
 ```
 
-### 3. Localized Routing
+### 4. Localized Routing
 
 Define routes that automatically receive a locale prefix and handle validation + content negotiation via middleware:
 
@@ -52,7 +55,7 @@ $url = URL::localeRoute('dashboard');
 <a href="@route('dashboard')">Dashboard</a>
 ```
 
-### 4. Creating a Language Switcher
+### 5. Creating a Language Switcher
 
 To generate a URL for the current page but in a different language:
 
@@ -66,7 +69,7 @@ $spanishUrl = URL::withLocale('es');
 @endlocales
 ```
 
-### 5. Locale-Aware Redirects
+### 6. Locale-Aware Redirects
 
 Whenever redirecting the user, use the `localized()` macro on the redirector to ensure the locale parameter is automatically appended to the redirect destination:
 
@@ -81,7 +84,7 @@ return redirect()->localized()->back();
 return redirect()->localized()->intended('/dashboard');
 ```
 
-### 6. Blade Formatting
+### 7. Blade Formatting
 
 Avoid raw PHP calls for locale-aware formatting. Use the powerful Blade directives instead:
 

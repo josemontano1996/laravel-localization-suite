@@ -8,7 +8,7 @@ This package provides driver-based, concurrency-safe localization for Laravel, i
 - **`native` driver:** Use for standard Laravel (FPM/mod_php). Mutates global state (`app()->setLocale()`).
 - **`context` driver:** Use for Laravel 11+ Context. Safe for standard Octane, but **not** truly concurrency safe (cannot handle multiple requests on the same worker simultaneously).
 - **`swoole` and `openswoole` drivers:** Use for Octane with Swoole/OpenSwoole. **These are truly concurrency safe**. They store locale in the Coroutine Context, providing 100% isolation. This means you can safely enable `HOOKS_ALL` (or other Swoole async hooks) for true per-worker concurrency without cross-request state bleed.
-- **Service:** `LocalizationServiceContract` handles current locale, route generation, translations, and number format. Available via `localization()` helper or `Localization` facade.
+- **Service & Auto-Discovery:** `LocalizationServiceProvider` and `Localization` Facade are automatically registered via Laravel Package Auto-Discovery. The `LocalizationServiceContract` handles current locale, route generation, translations, and number format. Available via `localization()` helper or `Localization` facade.
 
 ### Key Features / Example Usage
 
