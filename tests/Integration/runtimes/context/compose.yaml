@@ -25,7 +25,7 @@ services:
             DB_DATABASE: ":memory:"
             SUPERVISOR_PHP_COMMAND: "/usr/bin/php -d variables_order=EGPCS artisan octane:swoole --host=0.0.0.0 --port=80"
             OCTANE_SERVER: swoole
-            LOCALIZATION_DRIVER: swoole
+            LOCALIZATION_DRIVER: context
         volumes:
             - "../../../../:/var/www"
         working_dir: /var/www/tests/Integration/runtimes/context
