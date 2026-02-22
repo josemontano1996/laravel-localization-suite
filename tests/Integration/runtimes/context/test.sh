@@ -4,7 +4,7 @@ set -e
 # Ensure we are in the script's directory
 cd "$(dirname "$0")"
 
-composer install --no-scripts --no-interaction
+composer update --no-scripts --no-interaction
 
 # Ensure .env exists
 if [ ! -f ".env" ]; then
@@ -23,10 +23,10 @@ chmod 0666 database/database.sqlite || true
 
 # 1. Start Sail
 ./vendor/bin/sail down
-./vendor/bin/sail build --no-cache && ./vendor/bin/sail up -d
+./vendor/bin/sail build && ./vendor/bin/sail up -d
 
 # 2. Ensure Octane is installed
-./vendor/bin/sail artisan octane:install --server=swoole --no-interaction
+./vendor/bin/sail artisan octane:install --server=frankenphp --no-interaction
 
 # Generate application key (if missing) and run migrations before clearing caches
 ./vendor/bin/sail artisan key:generate --force || true
@@ -44,9 +44,11 @@ while ! ./vendor/bin/sail exec laravel.test curl -s -I http://localhost:80 > /de
 done
 
 # 5. Run concurrency test
-TOTAL=${1:-100}
-CONCURRENCY=${2:-50}
+TOTAL=${1:-200}
+CONCURRENCY=${2:-11}
 ./vendor/bin/sail php concurrent_bleedtest.php -t "$TOTAL" -c "$CONCURRENCY"
+
+rm .env
 
 # 6. Stop Sail
 ./vendor/bin/sail down
