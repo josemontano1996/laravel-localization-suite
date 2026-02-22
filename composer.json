@@ -1,5 +1,19 @@
 {
     "name": "josemontano1996/laravel-localization-suite",
+    "description": "A comprehensive, runtime-safe localization suite for Laravel 12+, with first-class support for Octane, Swoole, and OpenSwoole concurrency.",
+    "keywords": [
+        "laravel",
+        "localization",
+        "i18n",
+        "octane",
+        "swoole",
+        "openswoole",
+        "concurrency",
+        "state-isolation"
+    ],
+    "license": "MIT",
+    "homepage": "https://github.com/josemontano1996/laravel-localization-suite",
+    "type": "library",
     "autoload": {
         "psr-4": {
             "Josemontano1996\\LaravelLocalizationSuite\\": "src/"
@@ -36,7 +50,10 @@
         "openswoole/ide-helper": "^4.11"
     },
     "suggest": {
-        "ext-swoole": "Required to use the SwooleDriver for high-concurrency isolation."
+        "ext-swoole": "Install ext-swoole to use the Swoole driver for high-concurrency isolation.",
+        "ext-openswoole": "Install ext-openswoole to use the OpenSwoole driver for high-concurrency isolation.",
+        "swoole/ide-helper": "IDE helper stubs for Swoole (development only).",
+        "openswoole/ide-helper": "IDE helper stubs for OpenSwoole (development only)."
     },
     "extra": {
         "laravel": {
