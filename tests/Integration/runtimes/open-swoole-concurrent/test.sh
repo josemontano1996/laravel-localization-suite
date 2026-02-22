@@ -6,7 +6,7 @@ rm -f storage/logs/octane-server-state.json
 rm -f bootstrap/cache/*.php
 
 echo "Updating dependencies (no-scripts)..."
-composer update --no-scripts --no-interaction
+composer update --no-scripts --no-interaction --ignore-platform-req=ext-openswoole
 
 # Ensure .env exists
 if [ ! -f ".env" ]; then
@@ -56,4 +56,3 @@ echo "Running Concurrency Test (Array Mode)..."
 
 rm .env
 
-./vendor/bin/sail down

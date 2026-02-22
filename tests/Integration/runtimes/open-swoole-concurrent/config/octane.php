@@ -29,10 +29,10 @@ return [
     'options' => [
         // This is the key setting for enabling coroutine hooks
         'enable_coroutine' => true,
-        'hook_flags' => 2147481599,
+        'hook_flags' => SWOOLE_HOOK_ALL,
             ],
         ],
-        
+
     /*
     |--------------------------------------------------------------------------
     | Octane Server

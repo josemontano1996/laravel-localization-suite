@@ -12,7 +12,8 @@
         "php": "^8.4",
         "laravel/framework": "^12.0",
         "laravel/octane": "^2.13",
-        "laravel/tinker": "^2.10.1"
+        "laravel/tinker": "^2.10.1",
+        "openswoole/core": "^22.2"
     },
     "require-dev": {
         "fakerphp/faker": "^1.23",
