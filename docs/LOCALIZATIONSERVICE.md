@@ -138,8 +138,8 @@ Generates a URL to a named route with the current locale automatically included.
 **Parameters:**
 
 - `$name` - Route name (string or BackedEnum)
-- `$parameters` - Route parameters (array or single value)
-- `$absolute` - Whether to generate absolute URL (default: true)
+- `$parameters` - Route parameters (array or single value, default: `[]`)
+- `$absolute` - Whether to generate absolute URL (default: `true`)
 
 **Returns:** String - Complete URL with locale parameter
 

@@ -100,6 +100,17 @@ return $this->redirector->action([PostController::class, 'show'], ['id' => 5]);
 // Automatically includes locale parameter in the action URL
 ```
 
+### `back(int $status = 302, array $headers = [], $fallback = false)`
+
+Redirect back to the previous page while preserving locale context.
+
+**Example:**
+
+```php
+return $this->redirector->back();
+// Returns to previous page with locale context preserved
+```
+
 ### `to(string $path, int $status = 302, array $headers = [], ?bool $secure = null)`
 
 Redirect to a specific path with automatic locale context.
@@ -120,17 +131,6 @@ Redirect to an external URL **without** locale injection (for external links).
 ```php
 return $this->redirector->away('https://external-site.com');
 // No locale parameter added - bypasses localization logic
-```
-
-### `back(int $status = 302, array $headers = [], $fallback = false)`
-
-Redirect back to the previous page while preserving locale context.
-
-**Example:**
-
-```php
-return $this->redirector->back();
-// Returns to previous page with locale context preserved
 ```
 
 ### `signedRoute(string $name, mixed $params = [], $expiration = null, int $status = 302, array $headers = [])`
