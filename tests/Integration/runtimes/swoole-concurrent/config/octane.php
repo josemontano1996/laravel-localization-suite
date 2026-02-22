@@ -25,6 +25,14 @@ use Laravel\Octane\Octane;
 
 return [
 
+    'swoole' => [
+    'options' => [
+        // This is the key setting for enabling coroutine hooks
+        'enable_coroutine' => true,
+        'hook_flags' => 2147481599,
+            ],
+        ],
+        
     /*
     |--------------------------------------------------------------------------
     | Octane Server

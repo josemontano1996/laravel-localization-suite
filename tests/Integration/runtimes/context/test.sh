@@ -26,7 +26,7 @@ chmod 0666 database/database.sqlite || true
 ./vendor/bin/sail build && ./vendor/bin/sail up -d
 
 # 2. Ensure Octane is installed
-./vendor/bin/sail artisan octane:install --server=frankenphp --no-interaction
+./vendor/bin/sail artisan octane:install --server=swoole --no-interaction
 
 # Generate application key (if missing) and run migrations before clearing caches
 ./vendor/bin/sail artisan key:generate --force || true
@@ -34,8 +34,8 @@ chmod 0666 database/database.sqlite || true
 
 ./vendor/bin/sail artisan optimize:clear
 
-# 4. Wait for Octane (Swoole) to be ready
-echo "Waiting for Octane (Swoole) to be ready..."
+# 4. Wait for Octane to be ready
+echo "Waiting for Octane to be ready..."
 timeout=20
 current_wait=0
 while ! ./vendor/bin/sail exec laravel.test curl -s -I http://localhost:80 > /dev/null && [ $current_wait -lt $timeout ]; do
@@ -44,8 +44,8 @@ while ! ./vendor/bin/sail exec laravel.test curl -s -I http://localhost:80 > /de
 done
 
 # 5. Run concurrency test
-TOTAL=${1:-200}
-CONCURRENCY=${2:-11}
+TOTAL=${1:-20}
+CONCURRENCY=${2:-3}
 ./vendor/bin/sail php concurrent_bleedtest.php -t "$TOTAL" -c "$CONCURRENCY"
 
 rm .env

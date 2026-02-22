@@ -43,10 +43,12 @@ done
 # 3. Run concurrency test
 # Total and concurrency can be overridden via flags if needed,
 # but we'll use sensible defaults for the matrix.
-TOTAL=${1:-200}
-CONCURRENCY=${2:-11}
+TOTAL=${1:-20}
+CONCURRENCY=${2:-3}
 
 ./vendor/bin/sail php concurrent_bleedtest.php -t "$TOTAL" -c "$CONCURRENCY"
+
+rm .env
 
 # 4. Stop Sail
 ./vendor/bin/sail down

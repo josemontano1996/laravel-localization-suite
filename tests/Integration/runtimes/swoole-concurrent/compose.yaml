@@ -25,6 +25,7 @@ services:
             DB_DATABASE: ":memory:"
             SUPERVISOR_PHP_COMMAND: "/usr/bin/php -d variables_order=EGPCS artisan octane:swoole --host=0.0.0.0 --port=80"
             OCTANE_SERVER: swoole
+            LOCALIZATION_DRIVER: swoole
         volumes:
             # Mount the REPO ROOT to /var/www so ../../../../src exists
             - "../../../../:/var/www"

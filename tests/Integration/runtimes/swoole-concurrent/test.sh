@@ -5,15 +5,30 @@ set -e
 rm -f storage/logs/octane-server-state.json
 rm -f bootstrap/cache/*.php
 
-echo "Installing dependencies (no-scripts)..."
-composer install --no-scripts --no-interaction
+echo "Updating dependencies (no-scripts)..."
+composer update --no-scripts --no-interaction
+
+# Ensure .env exists
+if [ ! -f ".env" ]; then
+    echo "Creating .env from .env.example"
+    cp .env.example .env
+fi
+
+
+# Ensure sqlite database file exists and is writable inside the runtime folder
+mkdir -p database
+if [ ! -f database/database.sqlite ]; then
+    echo "Creating database/database.sqlite"
+    touch database/database.sqlite
+fi
+chmod 0666 database/database.sqlite || true
 
 echo "Starting Sail in-memory..."
 ./vendor/bin/sail down
-./vendor/bin/sail build --no-cache && ./vendor/bin/sail up -d
+./vendor/bin/sail build && ./vendor/bin/sail up -d
 
 # Crucial: Octane needs its binaries synced
-./vendor/bin/sail artisan octane:install --server=swoole --force
+./vendor/bin/sail artisan octane:install --server=swoole
 
 echo "Optimizing application for concurrency test..."
 ./vendor/bin/sail artisan key:generate --force || true
@@ -38,5 +53,7 @@ done
 
 echo "Running Concurrency Test (Array Mode)..."
 ./vendor/bin/sail php concurrent_bleedtest.php -t 200 -c 50
+
+rm .env
 
 ./vendor/bin/sail down
