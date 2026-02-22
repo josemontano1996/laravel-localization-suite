@@ -30,7 +30,8 @@ jobs:
         uses: shivammathur/setup-php@v2
         with:
           php-version: ${{ matrix.php }}
-          extensions: dom, curl, libxml, mbstring, zip, pcntl, pdo, sqlite3, pdo_sqlite, bcmath, soap, intl, gd, exif, iconv, imagick, fileinfo, swoole, openswoole
+          # Swoole and OpenSwoole cannot be loaded at the same time as they share function names.
+          extensions: dom, curl, libxml, mbstring, zip, pcntl, pdo, sqlite3, pdo_sqlite, bcmath, soap, intl, gd, exif, iconv, imagick, fileinfo, ${{ matrix.runtime == 'open-swoole-concurrent' && 'openswoole' || 'swoole' }}
           coverage: none
 
       - name: Run Integration Test
