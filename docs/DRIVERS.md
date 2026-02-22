@@ -12,7 +12,7 @@ This package uses a driver-based architecture to manage localization state. Each
 
 - **Class:** `Josemontano1996\LaravelLocalizationSuite\Drivers\Localization\NativeDriver`
 - **Environment:** Standard Laravel (FPM/mod_php)
-- **How it works:** Uses Laravel's global `app()->setLocale()` and `app()->getLocale()` methods. Locale is stored globally, so this is but is the default for traditional PHP environments.
+- **How it works:** Uses Laravel's global `app()->setLocale()` and `app()->getLocale()` methods. Locale is stored globally, so this is the default for traditional PHP environments.
 - **Global state:** Yes (`isSafeToMutateGlobalState()` returns `true`).
 
 ---
@@ -21,7 +21,7 @@ This package uses a driver-based architecture to manage localization state. Each
 
 - **Class:** `Josemontano1996\LaravelLocalizationSuite\Drivers\Localization\ContextDriver`
 - **Environment:** Laravel 11+ with the Context API
-- **How it works:** Stores the locale in Laravel's Context, providing request-level isolation. This prevents cross-request bleed in regular cases, but is not safe for true concurrency (e.g., Swoole/Octane with HOOKS_ALL enabled where multiple requests are handled simultaneusly by the same worker).
+- **How it works:** Stores the locale in Laravel's Context, providing request-level isolation. This prevents cross-request bleed in regular cases, but is not safe for true concurrency (e.g., Swoole/Octane with HOOKS_ALL enabled where multiple requests are handled simultaneously by the same worker).
 - **Global state:** No (`isSafeToMutateGlobalState()` returns `false`).
 
 ---
@@ -57,7 +57,7 @@ Each driver must implement the `isSafeToMutateGlobalState()` method. This method
   - `app()->setLocale($locale)` (Laravel global locale)
   - `Carbon::setLocale($locale)` and `CarbonImmutable::setLocale($locale)` (date/time localization)
   - URL generator defaults for the locale route key
-  - This helps improve compatibility with corrent not Octane safe packages.
+  - This helps improve compatibility with current non-Octane safe packages.
 
 - If a driver returns **false** (like Context, Swoole, and OpenSwoole drivers), these global changes are **not** performed. This prevents cross-request locale bleed environments.
 

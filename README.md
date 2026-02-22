@@ -2,7 +2,7 @@
 
 A comprehensive, runtime safe, localization package for Laravel 12+ with first-class driver support for **Laravel Octane**, **Swoole**, and **OpenSwoole**.
 
-Localize your laravel app without having to worry about the runtime your app will run on, FPM, Octane, or even Octane with Swoole or OpenSwoole asyncronous hooks, just change the localization driver and you will get a worry free localized app.
+Localize your laravel app without having to worry about the runtime your app will run on, FPM, Octane, or even Octane with Swoole or OpenSwoole asynchronous hooks, just change the localization driver and you will get a worry free localized app.
 
 [![PHP Version](https://img.shields.io/badge/php-%5E8.4-blue)](https://php.net)
 [![Laravel Version](https://img.shields.io/badge/laravel-12.x-red)](https://laravel.com)
@@ -11,7 +11,7 @@ Localize your laravel app without having to worry about the runtime your app wil
 
 - **Driver-based architecture** — Swap between Native, Context, Swoole, or OpenSwoole drivers depending on your needs.
 - **Octane-ready** — Octane-safe drivers grant locale isolation preventing cross-request bleed
-- **Concurrency safe drivers** — Swoole and OpenSwoole drivers are completely concurrency safe, meaning they support multiple concurrent requests per worker and supporting all Swoole based HOOKS.
+- **Concurrency safe drivers** — Swoole and OpenSwoole drivers are completely concurrency safe, meaning they support multiple concurrent requests per worker and they support all Swoole based HOOKS.
 - **Localized routing** — Simple locale-prefixed route groups with automatic detection
 - **Middlewares** - Useful middlewares for smart locale detection with metadata integration for best SEO practices
 - **Blade directives** — `@t`, `@route`, `@locale`, `@currency`, `@date` and more
@@ -95,7 +95,6 @@ Route::localized()
     ->group(function () {
         Route::get('/', fn () => view('home'))->name('home');
         Route::get('/about', fn () => view('about'))->name('about');
-        Route::get('/contact', fn () => view('contact'))->name('contact');
     });
 ```
 
@@ -193,7 +192,7 @@ Route::localized()
 The package provides a `localization` middleware group that:
 
 1. **Detects locale from URL** — Reads the `{locale}` route parameter
-2. **Validates locale** — Redirects to best match if unsupported, falling back to smart request prefered locales
+2. **Validates locale** — Redirects to best match if unsupported, falling back to smart request preferred locales.
 3. **Sets response headers** — Adds `Content-Language` header
 
 ```php
