@@ -13,8 +13,14 @@ jobs:
       fail-fast: false
       matrix:
         runtime: [native, context, swoole-concurrent, open-swoole-concurrent]
+        php: ['8.4', '8.5']
+        exclude:
+          - runtime: swoole-concurrent
+            php: '8.5'
+          - runtime: open-swoole-concurrent
+            php: '8.5'
 
-    name: Runtime - ${{ matrix.runtime }}
+    name: ${{ matrix.runtime }} (PHP ${{ matrix.php }})
 
     steps:
       - name: Checkout code
@@ -23,12 +29,14 @@ jobs:
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
-          php-version: '8.4'
+          php-version: ${{ matrix.php }}
           extensions: dom, curl, libxml, mbstring, zip, pcntl, pdo, sqlite3, pdo_sqlite, bcmath, soap, intl, gd, exif, iconv, imagick, fileinfo, swoole, openswoole
           coverage: none
 
       - name: Run Integration Test
         working-directory: tests/Integration/runtimes/${{ matrix.runtime }}
+        env:
+          PHP_VERSION: ${{ matrix.php }}
         run: |
           chmod +x test.sh
           ./test.sh
