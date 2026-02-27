@@ -67,8 +67,9 @@
         }
     },
     "scripts": {
-        "test": "pest --parallel",
+        "test": "pest",
         "coverage": "pest --coverage",
+        "rector": "rector ",
         "lint": "pint --parallel",
         "analyse": "phpstan analyse"
     },
