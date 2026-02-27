@@ -6,8 +6,8 @@ use Josemontano1996\LaravelLocalizationSuite\Exceptions\LocaleConfigException;
 use Josemontano1996\LaravelLocalizationSuite\Exceptions\OpenSwooleDriverException;
 use Josemontano1996\LaravelLocalizationSuite\Exceptions\SwooleDriverException;
 
-describe('Exceptions', function () {
-    it('LocaleConfigException::missingSupportedLocales provides an actionable message', function () {
+describe('Exceptions', function (): void {
+    it('LocaleConfigException::missingSupportedLocales provides an actionable message', function (): void {
         $exception = LocaleConfigException::missingSupportedLocales();
 
         expect($exception)
@@ -16,7 +16,7 @@ describe('Exceptions', function () {
             ->toBe("Localization Suite: The 'app.supported_locales' configuration is missing or empty. Please define at least one locale in your config file.");
     });
 
-    it('LocaleConfigException::missingFallbackLocale provides an actionable message', function () {
+    it('LocaleConfigException::missingFallbackLocale provides an actionable message', function (): void {
         $exception = LocaleConfigException::missingFallbackLocale();
 
         expect($exception)
@@ -25,7 +25,7 @@ describe('Exceptions', function () {
             ->toBe("Localization Suite: Error while falling back to fallback locale, 'app.fallback_locale' configuration is missing or empty. Please define the app.fallback_locale or the app.locale.");
     });
 
-    it('OpenSwooleDriverException::missingExtension explains the extension requirement', function () {
+    it('OpenSwooleDriverException::missingExtension explains the extension requirement', function (): void {
         $exception = OpenSwooleDriverException::missingExtension();
 
         expect($exception)
@@ -34,7 +34,7 @@ describe('Exceptions', function () {
             ->toBe('The "openswoole" PHP extension is required to use the OpenSwooleDriver.');
     });
 
-    it('OpenSwooleDriverException::missingCoroutineSupport explains coroutine requirement', function () {
+    it('OpenSwooleDriverException::missingCoroutineSupport explains coroutine requirement', function (): void {
         $exception = OpenSwooleDriverException::missingCoroutineSupport();
 
         expect($exception)
@@ -43,7 +43,7 @@ describe('Exceptions', function () {
             ->toBe('OpenSwoole Coroutine support is not available or the class does not exist.');
     });
 
-    it('SwooleDriverException::missingExtension explains the extension requirement', function () {
+    it('SwooleDriverException::missingExtension explains the extension requirement', function (): void {
         $exception = SwooleDriverException::missingExtension();
 
         expect($exception)

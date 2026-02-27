@@ -25,7 +25,7 @@ trait ResolvesConfigLocale
     {
         $default = $this->getDefaultConfigLocale();
 
-        return ! empty($default) ? $default : $this->getDefaultFallbackLocale();
+        return empty($default) ? $this->getDefaultFallbackLocale() : $default;
     }
 
     /**
@@ -86,7 +86,7 @@ trait ResolvesConfigLocale
         }
 
         // Return if we have a valid, non-empty array
-        if (\is_array($supported) && ! empty(array_filter($supported))) {
+        if (\is_array($supported) && array_filter($supported) !== []) {
             return array_values(array_filter($supported));
         }
 
@@ -96,7 +96,7 @@ trait ResolvesConfigLocale
             $this->getDefaultFallbackLocale(),
         ])));
 
-        if (empty($defaults)) {
+        if ($defaults === []) {
             throw LocaleConfigException::missingSupportedLocales();
         }
 

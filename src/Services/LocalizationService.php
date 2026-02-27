@@ -39,7 +39,7 @@ final class LocalizationService implements LocalizationServiceContract
 
     public function negotiateLocale(?\Illuminate\Http\Request $request = null): string
     {
-        if ($request === null) {
+        if (!$request instanceof \Illuminate\Http\Request) {
             return $this->getConfigLocale();
         }
 
@@ -87,16 +87,5 @@ final class LocalizationService implements LocalizationServiceContract
         }
 
         return $fmt->format((float) $value) ?: (string) $value;
-    }
-
-    private function syncGlobalState(string $locale): void
-    {
-        $this->url->defaults([$this->getRouteKey() => $locale]);
-
-        // Global Carbon State
-        if (class_exists(Carbon::class)) {
-            Carbon::setLocale($locale);
-            CarbonImmutable::setLocale($locale);
-        }
     }
 }

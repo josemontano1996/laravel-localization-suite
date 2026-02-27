@@ -43,46 +43,46 @@ namespace {
     use Josemontano1996\LaravelLocalizationSuite\Exceptions\OpenSwooleDriverException;
     use Josemontano1996\LaravelLocalizationSuite\Exceptions\SwooleDriverException;
 
-    beforeEach(function () {
+    beforeEach(function (): void {
         ConstructorSwitch::$extension = ['openswoole' => true, 'swoole' => true];
         ConstructorSwitch::$classExists = [];
     });
 
-    afterEach(function () {
+    afterEach(function (): void {
         ConstructorSwitch::$extension = ['openswoole' => true, 'swoole' => true];
         ConstructorSwitch::$classExists = [];
     });
 
-    describe('OpenSwooleDriver constructor', function () {
-        it('throws when the openswoole extension is missing', function () {
+    describe('OpenSwooleDriver constructor', function (): void {
+        it('throws when the openswoole extension is missing', function (): void {
             ConstructorSwitch::$extension['openswoole'] = false;
 
-            expect(fn () => new OpenSwooleDriver)
+            expect(fn (): \Josemontano1996\LaravelLocalizationSuite\Drivers\Localization\OpenSwooleDriver => new OpenSwooleDriver)
                 ->toThrow(OpenSwooleDriverException::class, 'The "openswoole" PHP extension is required to use the OpenSwooleDriver.');
         });
 
-        it('throws when coroutine support is missing', function () {
+        it('throws when coroutine support is missing', function (): void {
             ConstructorSwitch::$extension['openswoole'] = true;
             ConstructorSwitch::$classExists[OpenSwoole\Coroutine::class] = false;
 
-            expect(fn () => new OpenSwooleDriver)
+            expect(fn (): \Josemontano1996\LaravelLocalizationSuite\Drivers\Localization\OpenSwooleDriver => new OpenSwooleDriver)
                 ->toThrow(OpenSwooleDriverException::class, 'OpenSwoole Coroutine support is not available or the class does not exist.');
         });
     });
 
-    describe('SwooleDriver constructor', function () {
-        it('throws when the swoole extension is missing', function () {
+    describe('SwooleDriver constructor', function (): void {
+        it('throws when the swoole extension is missing', function (): void {
             ConstructorSwitch::$extension['swoole'] = false;
 
-            expect(fn () => new SwooleDriver)
+            expect(fn (): \Josemontano1996\LaravelLocalizationSuite\Drivers\Localization\SwooleDriver => new SwooleDriver)
                 ->toThrow(SwooleDriverException::class, 'The SwooleDriver requires the "swoole" PHP extension to be installed and enabled.');
         });
 
-        it('throws when coroutine support is missing', function () {
+        it('throws when coroutine support is missing', function (): void {
             ConstructorSwitch::$extension['swoole'] = true;
             ConstructorSwitch::$classExists[Swoole\Coroutine::class] = false;
 
-            expect(fn () => new SwooleDriver)
+            expect(fn (): \Josemontano1996\LaravelLocalizationSuite\Drivers\Localization\SwooleDriver => new SwooleDriver)
                 ->toThrow(SwooleDriverException::class, 'The SwooleDriver requires the "swoole" PHP extension to be installed and enabled.');
         });
     });

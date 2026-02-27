@@ -41,30 +41,17 @@ abstract class TestCase extends BaseTestCase
      */
     protected function defineRoutes($router): void
     {
-        $setLocaleMiddleware = SetLocaleFromRoute::class;
-        $setHeadersMiddleware = SetLocalizedHeaders::class;
-
         // Routes with {locale} in path - constrained to valid locales only
-        Route::get('/{locale}', function () {
-            return 'home';
-        })->name('home');
+        Route::get('/{locale}', fn(): string => 'home')->name('home');
 
-        Route::get('/{locale}/post/{id}', function () {
-            return 'post';
-        })->name('post.show');
+        Route::get('/{locale}/post/{id}', fn(): string => 'post')->name('post.show');
 
-        Route::get('/{locale}/user/{id}', function () {
-            return 'user';
-        })->name('user.profile');
+        Route::get('/{locale}/user/{id}', fn(): string => 'user')->name('user.profile');
 
         // Routes without {locale} - locale becomes query parameter
-        Route::get('/api/status', function () {
-            return 'api status';
-        })->name('api.status');
+        Route::get('/api/status', fn(): string => 'api status')->name('api.status');
 
-        Route::get('/api/posts/{id}', function () {
-            return 'api post';
-        })->name('api.posts.show');
+        Route::get('/api/posts/{id}', fn(): string => 'api post')->name('api.posts.show');
     }
 
     /**

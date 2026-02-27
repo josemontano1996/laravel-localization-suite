@@ -9,7 +9,7 @@ use Illuminate\Http\Request;
 use Josemontano1996\LaravelLocalizationSuite\Contracts\LocalizationServiceContract;
 use Symfony\Component\HttpFoundation\Response;
 
-final class SetLocalizedHeaders
+final readonly class SetLocalizedHeaders
 {
     /**
      * Create a new SetLocaleHeaders middleware instance.
@@ -17,7 +17,7 @@ final class SetLocalizedHeaders
      * @param  LocalizationServiceContract  $localizationService  The localization service
      */
     public function __construct(
-        private readonly LocalizationServiceContract $localizationService
+        private LocalizationServiceContract $localizationService
     ) {}
 
     public function handle(Request $request, Closure $next): Response
@@ -30,7 +30,7 @@ final class SetLocalizedHeaders
 
         // Add to Vary header (append if already exists)
         $vary = $response->headers->get('Vary');
-        $varyValues = $vary ? array_map('trim', explode(',', $vary)) : [];
+        $varyValues = $vary ? array_map(trim(...), explode(',', (string) $vary)) : [];
 
         if (! \in_array('Accept-Language', $varyValues, true)) {
             $varyValues[] = 'Accept-Language';

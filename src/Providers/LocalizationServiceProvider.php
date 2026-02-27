@@ -23,11 +23,12 @@ class LocalizationServiceProvider extends ServiceProvider
 {
     private const string CONFIG_PATH = __DIR__.'/../../config/localization.php';
 
+    #[\Override]
     public function register(): void
     {
         $this->mergeConfigFrom(self::CONFIG_PATH, 'localization');
 
-        $this->app->scoped(LocalizationDriverContract::class, function ($app) {
+        $this->app->scoped(LocalizationDriverContract::class, function ($app): \Josemontano1996\LaravelLocalizationSuite\Contracts\LocalizationDriverContract {
             // 1. Get the string "key" from the config (default to 'native')
             $driverKey = config('localization.driver', 'native');
 
@@ -49,13 +50,11 @@ class LocalizationServiceProvider extends ServiceProvider
             return $driver;
         });
 
-        $this->app->scoped(LocalizationServiceContract::class, function ($app) {
-            return new LocalizationService(
-                $app->make(LocalizationDriverContract::class),
-                $app->make(\Illuminate\Routing\UrlGenerator::class),
-                config('localization.route_key', 'locale')
-            );
-        });
+        $this->app->scoped(LocalizationServiceContract::class, fn($app): \Josemontano1996\LaravelLocalizationSuite\Services\LocalizationService => new LocalizationService(
+            $app->make(LocalizationDriverContract::class),
+            $app->make(\Illuminate\Routing\UrlGenerator::class),
+            config('localization.route_key', 'locale')
+        ));
     }
 
     /**

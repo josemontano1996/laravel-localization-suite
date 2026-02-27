@@ -6,14 +6,14 @@ use Josemontano1996\LaravelLocalizationSuite\Contracts\LocalizationDriverContrac
 use Josemontano1996\LaravelLocalizationSuite\Contracts\LocalizationServiceContract;
 use Josemontano1996\LaravelLocalizationSuite\Drivers\Localization\ContextDriver;
 
-describe('ContextDriver', function () {
-    beforeEach(function () {
+describe('ContextDriver', function (): void {
+    beforeEach(function (): void {
         app()->forgetScopedInstances();
         app()->forgetInstance(LocalizationDriverContract::class);
         config(['localization.driver' => 'context']);
     });
 
-    it('stores locale in Laravel Context without mutating global state', function () {
+    it('stores locale in Laravel Context without mutating global state', function (): void {
         $service = app(LocalizationServiceContract::class);
         $driver = app(LocalizationDriverContract::class);
 

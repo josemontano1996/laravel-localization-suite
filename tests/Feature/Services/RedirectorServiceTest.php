@@ -7,9 +7,9 @@ namespace Tests\Feature\Services;
 use Josemontano1996\LaravelLocalizationSuite\Contracts\LocalizationServiceContract;
 use Josemontano1996\LaravelLocalizationSuite\Services\RedirectorService;
 
-describe('RedirectorService', function () {
+describe('RedirectorService', function (): void {
 
-    it('redirects to a localized route', function () {
+    it('redirects to a localized route', function (): void {
         $service = app(LocalizationServiceContract::class);
         $redirector = app(RedirectorService::class);
         $service->setCurrentLocale('en');
@@ -20,7 +20,7 @@ describe('RedirectorService', function () {
         expect($response->getTargetUrl())->toContain('/en');
     });
 
-    it('redirects to localized route with parameters', function () {
+    it('redirects to localized route with parameters', function (): void {
         $service = app(LocalizationServiceContract::class);
         $redirector = app(RedirectorService::class);
         $service->setCurrentLocale('es');
@@ -31,7 +31,7 @@ describe('RedirectorService', function () {
         expect($response->getTargetUrl())->toContain('/es/post/123');
     });
 
-    it('redirects with custom status code', function () {
+    it('redirects with custom status code', function (): void {
         $service = app(LocalizationServiceContract::class);
         $redirector = app(RedirectorService::class);
         $service->setCurrentLocale('en');
@@ -41,7 +41,7 @@ describe('RedirectorService', function () {
         expect($response->status())->toBe(301);
     });
 
-    it('redirects with custom headers', function () {
+    it('redirects with custom headers', function (): void {
         $service = app(LocalizationServiceContract::class);
         $redirector = app(RedirectorService::class);
         $service->setCurrentLocale('en');
@@ -51,7 +51,7 @@ describe('RedirectorService', function () {
         expect($response->headers->get('X-Custom-Header'))->toBe('test');
     });
 
-    it('redirects to external URL without localization', function () {
+    it('redirects to external URL without localization', function (): void {
         $redirector = app(RedirectorService::class);
 
         $response = $redirector->away('https://example.com');
@@ -60,7 +60,7 @@ describe('RedirectorService', function () {
         expect($response->getTargetUrl())->not()->toContain('locale=');
     });
 
-    it('redirects to route without locale segment using query parameter', function () {
+    it('redirects to route without locale segment using query parameter', function (): void {
         $service = app(LocalizationServiceContract::class);
         $redirector = app(RedirectorService::class);
         $service->setCurrentLocale('es');
@@ -72,7 +72,7 @@ describe('RedirectorService', function () {
         expect($response->getTargetUrl())->toContain('locale=es');
     });
 
-    it('redirects to route without locale segment with parameters', function () {
+    it('redirects to route without locale segment with parameters', function (): void {
         $service = app(LocalizationServiceContract::class);
         $redirector = app(RedirectorService::class);
         $service->setCurrentLocale('fr');
@@ -84,7 +84,7 @@ describe('RedirectorService', function () {
         expect($response->getTargetUrl())->toContain('locale=fr');
     });
 
-    it('redirects to localized path', function () {
+    it('redirects to localized path', function (): void {
         $service = app(LocalizationServiceContract::class);
         $redirector = app(RedirectorService::class);
         $service->setCurrentLocale('fr');
@@ -94,7 +94,7 @@ describe('RedirectorService', function () {
         expect($response->getTargetUrl())->toContain('/fr');
     });
 
-    it('redirects back with localization', function () {
+    it('redirects back with localization', function (): void {
         $service = app(LocalizationServiceContract::class);
         $redirector = app(RedirectorService::class);
         $service->setCurrentLocale('es');
@@ -105,7 +105,7 @@ describe('RedirectorService', function () {
         expect($response->getTargetUrl())->toContain('/es');
     });
 
-    it('proxies unknown methods to underlying redirector', function () {
+    it('proxies unknown methods to underlying redirector', function (): void {
         $service = app(LocalizationServiceContract::class);
         $redirector = app(RedirectorService::class);
         $service->setCurrentLocale('en');
@@ -115,7 +115,7 @@ describe('RedirectorService', function () {
         expect($response->getTargetUrl())->toContain('/en');
     });
 
-    it('redirects to localized signed route', function () {
+    it('redirects to localized signed route', function (): void {
         $service = app(LocalizationServiceContract::class);
         $redirector = app(RedirectorService::class);
         $service->setCurrentLocale('en');
@@ -126,7 +126,7 @@ describe('RedirectorService', function () {
         expect($response->getTargetUrl())->toContain('signature=');
     });
 
-    it('redirects to localized signed route with parameters', function () {
+    it('redirects to localized signed route with parameters', function (): void {
         $service = app(LocalizationServiceContract::class);
         $redirector = app(RedirectorService::class);
         $service->setCurrentLocale('en');
@@ -137,7 +137,7 @@ describe('RedirectorService', function () {
         expect($response->getTargetUrl())->toContain('signature=');
     });
 
-    it('redirects to localized temporary signed route', function () {
+    it('redirects to localized temporary signed route', function (): void {
         $service = app(LocalizationServiceContract::class);
         $redirector = app(RedirectorService::class);
         $service->setCurrentLocale('fr');
@@ -149,7 +149,7 @@ describe('RedirectorService', function () {
         expect($response->getTargetUrl())->toContain('expires=');
     });
 
-    it('redirects to localized temporary signed route with parameters', function () {
+    it('redirects to localized temporary signed route with parameters', function (): void {
         $service = app(LocalizationServiceContract::class);
         $redirector = app(RedirectorService::class);
         $service->setCurrentLocale('es');
@@ -161,7 +161,7 @@ describe('RedirectorService', function () {
         expect($response->getTargetUrl())->toContain('signature=');
     });
 
-    it('respects custom status and headers on signed routes', function () {
+    it('respects custom status and headers on signed routes', function (): void {
         $service = app(LocalizationServiceContract::class);
         $redirector = app(RedirectorService::class);
         $service->setCurrentLocale('en');
@@ -172,7 +172,7 @@ describe('RedirectorService', function () {
         expect($response->headers->get('X-Test'))->toBe('value');
     });
 
-    it('respects custom status and headers on temporary signed routes', function () {
+    it('respects custom status and headers on temporary signed routes', function (): void {
         $service = app(LocalizationServiceContract::class);
         $redirector = app(RedirectorService::class);
         $service->setCurrentLocale('en');
@@ -183,7 +183,7 @@ describe('RedirectorService', function () {
         expect($response->headers->get('X-Header'))->toBe('data');
     });
 
-    it('refreshes current page with localization preserved', function () {
+    it('refreshes current page with localization preserved', function (): void {
         $service = app(LocalizationServiceContract::class);
         $redirector = app(RedirectorService::class);
         $service->setCurrentLocale('en');
@@ -194,13 +194,13 @@ describe('RedirectorService', function () {
             $response = $redirector->refresh();
             // If successful, verify status
             expect($response->status())->toBe(302);
-        } catch (\Exception $e) {
+        } catch (\Exception) {
             // Expected - refresh() depends on active request path
             expect(true)->toBeTrue();
         }
     });
 
-    it('changes locale when setting current locale before redirecting', function () {
+    it('changes locale when setting current locale before redirecting', function (): void {
         $service = app(LocalizationServiceContract::class);
         $redirector = app(RedirectorService::class);
 

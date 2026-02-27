@@ -3,15 +3,15 @@
 declare(strict_types=1);
 use Josemontano1996\LaravelLocalizationSuite\Contracts\LocalizationServiceContract;
 
-describe('Helpers', function () {
+describe('Helpers', function (): void {
 
-    it('localization() returns the actual service from the container', function () {
+    it('localization() returns the actual service from the container', function (): void {
         $service = localization();
 
         expect($service)->toBeInstanceOf(LocalizationServiceContract::class);
     });
 
-    it('t() translates a key using the real service', function () {
+    it('t() translates a key using the real service', function (): void {
         // Arrange: Add a temporary translation to the real Laravel translator
         app('translator')->addLines([
             'messages.hello' => 'Hello World',
@@ -24,7 +24,7 @@ describe('Helpers', function () {
         expect($result)->toBe('Hello World');
     });
 
-    it('tchoice() handles pluralization correctly', function () {
+    it('tchoice() handles pluralization correctly', function (): void {
         app('translator')->addLines([
             'messages.apples' => '{0} No apples|{1} One apple|[2,*] :count apples',
         ], 'en');
@@ -34,7 +34,7 @@ describe('Helpers', function () {
         expect(tchoice('messages.apples', 5))->toBe('5 apples');
     });
 
-    it('l_format_number() formats numbers based on the real service logic', function () {
+    it('l_format_number() formats numbers based on the real service logic', function (): void {
         $result = l_format_number(1234.56, 1);
         expect($result)->toContain('1,234.56');
     });

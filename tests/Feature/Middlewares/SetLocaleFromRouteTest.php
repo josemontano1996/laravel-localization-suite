@@ -7,10 +7,10 @@ use Josemontano1996\LaravelLocalizationSuite\Contracts\LocalizationServiceContra
 use Josemontano1996\LaravelLocalizationSuite\Middlewares\SetLocaleFromRoute;
 use Josemontano1996\LaravelLocalizationSuite\Middlewares\SetLocalizedHeaders;
 
-describe('SetLocaleFromRoute Middleware', function () {
+describe('SetLocaleFromRoute Middleware', function (): void {
 
-    describe('Named Routes', function () {
-        it('handles supported locales in named routes', function () {
+    describe('Named Routes', function (): void {
+        it('handles supported locales in named routes', function (): void {
             Route::middleware([SetLocaleFromRoute::class, SetLocalizedHeaders::class])
                 ->get('/{locale}/route1', function () {
                     $service = app(LocalizationServiceContract::class);
@@ -24,7 +24,7 @@ describe('SetLocaleFromRoute Middleware', function () {
             expect($response->json('locale'))->toBe('en');
         });
 
-        it('redirects to fallback locale for unsupported locales in named routes', function () {
+        it('redirects to fallback locale for unsupported locales in named routes', function (): void {
             Route::middleware([SetLocaleFromRoute::class, SetLocalizedHeaders::class])
                 ->get('/{locale}/route2', function () {
                     $service = app(LocalizationServiceContract::class);
@@ -38,7 +38,7 @@ describe('SetLocaleFromRoute Middleware', function () {
             expect($response->headers->get('location'))->toContain('/fr/route2');
         });
 
-        it('uses config locale as fallback when no Accept-Language header', function () {
+        it('uses config locale as fallback when no Accept-Language header', function (): void {
             Route::middleware([SetLocaleFromRoute::class, SetLocalizedHeaders::class])
                 ->get('/{locale}/route3', function () {
                     $service = app(LocalizationServiceContract::class);
@@ -52,7 +52,7 @@ describe('SetLocaleFromRoute Middleware', function () {
             expect($response->headers->get('location'))->toContain('/en/route3');
         });
 
-        it('respects preferred locale from Accept-Language header', function () {
+        it('respects preferred locale from Accept-Language header', function (): void {
             Route::middleware([SetLocaleFromRoute::class, SetLocalizedHeaders::class])
                 ->get('/{locale}/route4', function () {
                     $service = app(LocalizationServiceContract::class);
@@ -66,11 +66,9 @@ describe('SetLocaleFromRoute Middleware', function () {
             expect($response->headers->get('location'))->toContain('/en/route4');
         });
 
-        it('preserves route parameters on redirect', function () {
+        it('preserves route parameters on redirect', function (): void {
             Route::middleware([SetLocaleFromRoute::class])
-                ->get('/{locale}/post/{id}', function () {
-                    return 'post';
-                })->name('test.post');
+                ->get('/{locale}/post/{id}', fn(): string => 'post')->name('test.post');
 
             $response = $this->get('/de/post/123', ['Accept-Language' => 'en']);
 
@@ -80,8 +78,8 @@ describe('SetLocaleFromRoute Middleware', function () {
         });
     });
 
-    describe('Unnamed Routes', function () {
-        it('handles supported locales in unnamed routes', function () {
+    describe('Unnamed Routes', function (): void {
+        it('handles supported locales in unnamed routes', function (): void {
             Route::middleware([SetLocaleFromRoute::class, SetLocalizedHeaders::class])
                 ->get('/{locale}/unnamed1', function () {
                     $service = app(LocalizationServiceContract::class);
@@ -95,7 +93,7 @@ describe('SetLocaleFromRoute Middleware', function () {
             expect($response->json('locale'))->toBe('en');
         });
 
-        it('redirects to path for unsupported locales in unnamed routes', function () {
+        it('redirects to path for unsupported locales in unnamed routes', function (): void {
             Route::middleware([SetLocaleFromRoute::class, SetLocalizedHeaders::class])
                 ->get('/{locale}/unnamed2', function () {
                     $service = app(LocalizationServiceContract::class);
@@ -109,7 +107,7 @@ describe('SetLocaleFromRoute Middleware', function () {
             expect($response->headers->get('location'))->toContain('/fr/unnamed2');
         });
 
-        it('uses config locale as fallback for unnamed routes', function () {
+        it('uses config locale as fallback for unnamed routes', function (): void {
             Route::middleware([SetLocaleFromRoute::class, SetLocalizedHeaders::class])
                 ->get('/{locale}/unnamed3', function () {
                     $service = app(LocalizationServiceContract::class);
@@ -123,7 +121,7 @@ describe('SetLocaleFromRoute Middleware', function () {
             expect($response->headers->get('location'))->toContain('/en/unnamed3');
         });
 
-        it('respects preferred locale for unnamed routes', function () {
+        it('respects preferred locale for unnamed routes', function (): void {
             Route::middleware([SetLocaleFromRoute::class, SetLocalizedHeaders::class])
                 ->get('/{locale}/unnamed4', function () {
                     $service = app(LocalizationServiceContract::class);
@@ -138,8 +136,8 @@ describe('SetLocaleFromRoute Middleware', function () {
         });
     });
 
-    describe('Service locale state', function () {
-        it('sets correct locale in service during request', function () {
+    describe('Service locale state', function (): void {
+        it('sets correct locale in service during request', function (): void {
             Route::middleware([SetLocaleFromRoute::class, SetLocalizedHeaders::class])
                 ->get('/{locale}/statetest', function () {
                     $service = app(LocalizationServiceContract::class);
@@ -153,8 +151,8 @@ describe('SetLocaleFromRoute Middleware', function () {
         });
     });
 
-    describe('Edge cases', function () {
-        it('works with multiple route parameters', function () {
+    describe('Edge cases', function (): void {
+        it('works with multiple route parameters', function (): void {
             Route::middleware([SetLocaleFromRoute::class])
                 ->get('/{locale}/user/{id}/post/{postId}', function () {
                     $service = app(LocalizationServiceContract::class);
@@ -168,11 +166,9 @@ describe('SetLocaleFromRoute Middleware', function () {
             expect($response->json('locale'))->toBe('en');
         });
 
-        it('handles unsupported locale with multiple parameters', function () {
+        it('handles unsupported locale with multiple parameters', function (): void {
             Route::middleware([SetLocaleFromRoute::class])
-                ->get('/{locale}/profile/{id}/settings/{section}', function () {
-                    return 'ok';
-                });
+                ->get('/{locale}/profile/{id}/settings/{section}', fn(): string => 'ok');
 
             $response = $this->get('/de/profile/1/settings/privacy', ['Accept-Language' => 'fr']);
 

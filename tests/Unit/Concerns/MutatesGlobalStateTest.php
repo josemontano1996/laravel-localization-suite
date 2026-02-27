@@ -3,18 +3,18 @@
 declare(strict_types=1);
 use Josemontano1996\LaravelLocalizationSuite\Drivers\Localization\Concerns\MutatesGlobalState;
 
-describe('MutatesGlobalState Trait', function () {
-    $makeTraitUser = fn () => new class
+describe('MutatesGlobalState Trait', function (): void {
+    $makeTraitUser = fn (): object => new class
     {
         use MutatesGlobalState;
     };
 
-    test('returns true for isSafeToMutateGlobalState', function () use ($makeTraitUser) {
+    test('returns true for isSafeToMutateGlobalState', function () use ($makeTraitUser): void {
         $user = $makeTraitUser();
         expect($user->isSafeToMutateGlobalState())->toBe(true);
     });
 
-    test('trait collision results in a fatal exit code', function () {
+    test('trait collision results in a fatal exit code', function (): void {
         // We create a temporary script that tries to use both traits
         $script = <<<PHP
                     <?php

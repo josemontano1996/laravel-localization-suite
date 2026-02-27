@@ -14,58 +14,50 @@ class RegisterBladeDirectives
         $service = 'app(\\Josemontano1996\\LaravelLocalizationSuite\\Contracts\\LocalizationServiceContract::class)';
 
         // --- Navigation & Translation ---
-        Blade::directive('route', fn ($expr) => "<?php echo {$service}->route($expr); ?>");
-        Blade::directive('t', fn ($expr) => "<?php echo {$service}->t($expr); ?>");
-        Blade::directive('tchoice', fn ($expr) => "<?php echo {$service}->tchoice($expr); ?>");
+        Blade::directive('route', fn ($expr): string => "<?php echo {$service}->route($expr); ?>");
+        Blade::directive('t', fn ($expr): string => "<?php echo {$service}->t($expr); ?>");
+        Blade::directive('tchoice', fn ($expr): string => "<?php echo {$service}->tchoice($expr); ?>");
 
         // --- State ---
-        Blade::directive('locale', fn () => "<?php echo {$service}->getCurrentLocale(); ?>");
+        Blade::directive('locale', fn (): string => "<?php echo {$service}->getCurrentLocale(); ?>");
 
-        Blade::if('localeIs', function ($code) {
-            return app(LocalizationServiceContract::class)
-                ->getCurrentLocale() === $code;
-        });
+        Blade::if('localeIs', fn($code): bool => app(LocalizationServiceContract::class)
+            ->getCurrentLocale() === $code);
 
-        Blade::directive('locales', function ($expression) use ($service) {
+        Blade::directive('locales', function ($expression) use ($service): string {
             $variable = trim($expression, '() ');
 
             return "<?php foreach({$service}->getSupportedLocales() as {$variable}): ?>";
         });
 
-        Blade::directive('endlocales', fn () => '<?php endforeach; ?>');
+        Blade::directive('endlocales', fn (): string => '<?php endforeach; ?>');
 
         // --- Formatting ---
-        Blade::directive('number', fn ($expr) => "<?php echo {$service}->formatNumber(...[$expr], style: \NumberFormatter::DECIMAL); ?>");
+        Blade::directive('number', fn ($expr): string => "<?php echo {$service}->formatNumber(...[$expr], style: \NumberFormatter::DECIMAL); ?>");
 
-        Blade::directive('currency', function ($expression) use ($service) {
-            return "<?php 
+        Blade::directive('currency', fn($expression): string => "<?php 
                 \$args = [$expression];
                 echo {$service}->formatNumber(\$args[0] ?? 0, \NumberFormatter::CURRENCY, [
                     'currency' => \$args[1] ?? 'USD',
                     'decimals' => \$args[2] ?? null
                 ]); 
-            ?>";
-        });
+            ?>");
 
-        Blade::directive('percent', fn ($expr) => "<?php echo {$service}->formatNumber(...[$expr], style: \NumberFormatter::PERCENT); ?>");
+        Blade::directive('percent', fn ($expr): string => "<?php echo {$service}->formatNumber(...[$expr], style: \NumberFormatter::PERCENT); ?>");
 
         // --- Dates ---
-        Blade::directive('date', function ($expression) use ($service) {
-            return "<?php 
+        Blade::directive('date', fn($expression): string => "<?php 
                 \$args = [$expression];
                 echo \\Carbon\\CarbonImmutable::parse(\$args[0] ?? 'now')
                     ->locale({$service}->getCurrentLocale())
                     ->isoFormat(\$args[1] ?? 'LL'); 
-            ?>";
-        });
+            ?>");
 
-        Blade::directive('datetime', function ($expression) use ($service) {
-            return "<?php 
+        Blade::directive('datetime', fn($expression): string => "<?php 
                 \$args = [$expression];
                 echo \\Carbon\\CarbonImmutable::parse(\$args[0] ?? 'now')
                     ->locale({$service}->getCurrentLocale())
                     ->isoFormat(\$args[1] ?? 'LLL'); 
-            ?>";
-        });
+            ?>");
     }
 }

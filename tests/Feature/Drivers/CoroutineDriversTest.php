@@ -20,16 +20,16 @@ class CoroutineStore
     }
 }
 
-beforeEach(function () {
+beforeEach(function (): void {
     Mockery::close();
 });
 
-afterEach(function () {
+afterEach(function (): void {
     Mockery::close();
 });
 
-describe('OpenSwooleDriver', function () {
-    it('stores locale per coroutine context without touching global state using mocks', function () {
+describe('OpenSwooleDriver', function (): void {
+    it('stores locale per coroutine context without touching global state using mocks', function (): void {
         $store = new CoroutineStore;
 
         $coroutine = Mockery::mock('alias:OpenSwoole\\Coroutine');
@@ -37,7 +37,7 @@ describe('OpenSwooleDriver', function () {
         $context = $store->get(1);
         $coroutine->shouldReceive('getContext')->times(3)->with(1)->andReturn($context, $context, $context);
 
-        $driver = (new \ReflectionClass(OpenSwooleDriver::class))->newInstanceWithoutConstructor();
+        $driver = new \ReflectionClass(OpenSwooleDriver::class)->newInstanceWithoutConstructor();
 
         expect($driver->isSafeToMutateGlobalState())->toBeFalse();
         expect($driver->getCurrentLocale())->toBeNull();
@@ -49,8 +49,8 @@ describe('OpenSwooleDriver', function () {
     });
 });
 
-describe('SwooleDriver', function () {
-    it('stores locale per coroutine context without touching global state using mocks', function () {
+describe('SwooleDriver', function (): void {
+    it('stores locale per coroutine context without touching global state using mocks', function (): void {
         $store = new CoroutineStore;
 
         $coroutine = Mockery::mock('alias:Swoole\\Coroutine');
@@ -58,7 +58,7 @@ describe('SwooleDriver', function () {
         $context = $store->get(1);
         $coroutine->shouldReceive('getContext')->times(3)->with(1)->andReturn($context, $context, $context);
 
-        $driver = (new \ReflectionClass(SwooleDriver::class))->newInstanceWithoutConstructor();
+        $driver = new \ReflectionClass(SwooleDriver::class)->newInstanceWithoutConstructor();
 
         expect($driver->isSafeToMutateGlobalState())->toBeFalse();
         expect($driver->getCurrentLocale())->toBeNull();

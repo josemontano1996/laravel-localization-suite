@@ -6,15 +6,15 @@ use Josemontano1996\LaravelLocalizationSuite\Contracts\LocalizationDriverContrac
 use Josemontano1996\LaravelLocalizationSuite\Contracts\LocalizationServiceContract;
 use Josemontano1996\LaravelLocalizationSuite\Drivers\Localization\NativeDriver;
 
-describe('NativeDriver', function () {
-    beforeEach(function () {
+describe('NativeDriver', function (): void {
+    beforeEach(function (): void {
         app()->forgetScopedInstances();
         app()->forgetInstance(LocalizationDriverContract::class);
         config(['localization.driver' => 'native']);
         app()->setLocale('en');
     });
 
-    it('mutates global app locale when setting current locale', function () {
+    it('mutates global app locale when setting current locale', function (): void {
         $service = app(LocalizationServiceContract::class);
         $driver = app(LocalizationDriverContract::class);
 

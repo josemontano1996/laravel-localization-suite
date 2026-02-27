@@ -7,14 +7,14 @@ use Illuminate\Support\Facades\Blade;
 use Josemontano1996\LaravelLocalizationSuite\Contracts\LocalizationServiceContract;
 use Josemontano1996\LaravelLocalizationSuite\Registrars\RegisterBladeDirectives;
 
-describe('RegisterBladeDirectives', function () {
-    beforeEach(function () {
+describe('RegisterBladeDirectives', function (): void {
+    beforeEach(function (): void {
         $this->service = app(LocalizationServiceContract::class);
         CarbonImmutable::setTestNow(CarbonImmutable::create(2020, 1, 1, 12, 0, 0, 'UTC'));
         RegisterBladeDirectives::register();
     });
 
-    it('renders navigation and translation directives', function () {
+    it('renders navigation and translation directives', function (): void {
         app('translator')->addLines([
             'messages.welcome' => 'Welcome',
             'messages.apples' => '{0} No apples|{1} One apple|[2,*] :count apples',
@@ -25,19 +25,19 @@ describe('RegisterBladeDirectives', function () {
             ->and(trim(Blade::render("@tchoice('messages.apples', 3)")))->toBe($this->service->tchoice('messages.apples', 3));
     });
 
-    it('exposes locale state helpers', function () {
+    it('exposes locale state helpers', function (): void {
         expect(trim(Blade::render('@locale')))->toBe($this->service->getCurrentLocale())
             ->and(trim(Blade::render("@localeIs('en') ok @endlocaleIs")))->toBe('ok')
             ->and(trim(Blade::render("@localeIs('fr') nope @endlocaleIs")))->toBe('');
     });
 
-    it('iterates supported locales', function () {
+    it('iterates supported locales', function (): void {
         $output = Blade::render('@locales($loc){{ $loc }}|@endlocales');
 
         expect(str_replace(' ', '', trim($output)))->toBe(implode('|', $this->service->getSupportedLocales()).'|');
     });
 
-    it('formats numbers, currency, and percent via the service', function () {
+    it('formats numbers, currency, and percent via the service', function (): void {
         $number = $this->service->formatNumber(123.45, \NumberFormatter::DECIMAL);
         $currency = $this->service->formatNumber(50, \NumberFormatter::CURRENCY, ['currency' => 'EUR', 'decimals' => 2]);
         $percent = $this->service->formatNumber(0.5, \NumberFormatter::PERCENT);
@@ -47,7 +47,7 @@ describe('RegisterBladeDirectives', function () {
             ->and(trim(Blade::render('@percent(0.5)')))->toBe($percent);
     });
 
-    it('formats dates using Carbon with current locale', function () {
+    it('formats dates using Carbon with current locale', function (): void {
         expect(trim(Blade::render('@date()')))->toBe('January 1, 2020')
             ->and(trim(Blade::render('@datetime()')))->toBe('January 1, 2020 12:00 PM');
     });

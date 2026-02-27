@@ -18,7 +18,7 @@ class RegisterMacros
         $contract = LocalizationServiceContract::class;
 
         // 1. Redirector macro
-        Redirector::macro('localized', function () use ($contract) {
+        Redirector::macro('localized', function () use ($contract): \Josemontano1996\LaravelLocalizationSuite\Services\RedirectorService {
             /** @var \Illuminate\Routing\Redirector $this */
             return new RedirectorService(
                 $this,
@@ -27,21 +27,17 @@ class RegisterMacros
         });
 
         // 2. Request macros
-        Request::macro('locale', function () use ($contract) {
-            return app($contract)->getCurrentLocale();
-        });
+        Request::macro('locale', fn() => app($contract)->getCurrentLocale());
 
-        Request::macro('acceptedLocales', function (): array {
-            return array_flip($this->getLanguages());
-        });
+        Request::macro('acceptedLocales', fn(): array => array_flip($this->getLanguages()));
 
-        Request::macro('preferredLocale', function (array $supported = []) {
+        Request::macro('preferredLocale', function (array $supported = []): ?string {
             $accepted = $this->acceptedLocales();
             if (empty($accepted)) {
                 return null;
             }
 
-            if (empty($supported)) {
+            if ($supported === []) {
                 return (string) \array_key_first($accepted);
             }
 
@@ -83,9 +79,7 @@ class RegisterMacros
             );
         });
 
-        URL::macro('localeRoute', function ($name, $params = [], $absolute = true) use ($contract) {
-            return app($contract)->route($name, $params, $absolute);
-        });
+        URL::macro('localeRoute', fn(\BackedEnum|string $name, $params = [], bool $absolute = true) => app($contract)->route($name, $params, $absolute));
 
         // 4. Route macro for locale-prefixed groups
         Route::macro('localized', function (?\Closure $callback = null) use ($contract) {
@@ -93,14 +87,14 @@ class RegisterMacros
             $routeKey = $service->getRouteKey(); // Dynamically get the key (e.g., 'lang')
             $supportedList = $service->getSupportedLocales();
 
-            $regex = ! empty($supportedList)
-                ? '(?i)'.implode('|', array_map('preg_quote', $supportedList))
-                : '[a-zA-Z-]+';
+            $regex = empty($supportedList)
+                ? '[a-zA-Z-]+'
+                : '(?i)'.implode('|', array_map(preg_quote(...), $supportedList));
 
             // Use the dynamic key for the prefix and the where constraint
             $registrar = Route::prefix('{'.$routeKey.'}')->where([$routeKey => $regex]);
 
-            return $callback ? $registrar->group($callback) : $registrar;
+            return $callback instanceof \Closure ? $registrar->group($callback) : $registrar;
         });
     }
 }

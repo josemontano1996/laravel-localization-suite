@@ -7,15 +7,15 @@ namespace Tests\Feature\Services;
 use Josemontano1996\LaravelLocalizationSuite\Contracts\LocalizationServiceContract;
 use NumberFormatter;
 
-describe('LocalizationService', function () {
+describe('LocalizationService', function (): void {
 
-    it('gets route key from configuration', function () {
+    it('gets route key from configuration', function (): void {
         $service = app(LocalizationServiceContract::class);
 
         expect($service->getRouteKey())->toBe('locale');
     });
 
-    it('returns current locale from driver', function () {
+    it('returns current locale from driver', function (): void {
         $service = app(LocalizationServiceContract::class);
 
         $currentLocale = $service->getCurrentLocale();
@@ -23,7 +23,7 @@ describe('LocalizationService', function () {
         expect($currentLocale)->toBeIn(['en', 'es', 'fr']);
     });
 
-    it('sets current locale when locale is supported', function () {
+    it('sets current locale when locale is supported', function (): void {
         $service = app(LocalizationServiceContract::class);
 
         $service->setCurrentLocale('es');
@@ -31,7 +31,7 @@ describe('LocalizationService', function () {
         expect($service->getCurrentLocale())->toBe('es');
     });
 
-    it('falls back to default locale when setting unsupported locale', function () {
+    it('falls back to default locale when setting unsupported locale', function (): void {
         $service = app(LocalizationServiceContract::class);
         $defaultLocale = config('app.locale');
 
@@ -40,7 +40,7 @@ describe('LocalizationService', function () {
         expect($service->getCurrentLocale())->toBe($defaultLocale);
     });
 
-    it('generates route with current locale parameter', function () {
+    it('generates route with current locale parameter', function (): void {
         $service = app(LocalizationServiceContract::class);
         $service->setCurrentLocale('en');
 
@@ -49,7 +49,7 @@ describe('LocalizationService', function () {
         expect($route)->toContain('/en');
     });
 
-    it('generates route with additional parameters', function () {
+    it('generates route with additional parameters', function (): void {
         $service = app(LocalizationServiceContract::class);
         $service->setCurrentLocale('es');
 
@@ -58,7 +58,7 @@ describe('LocalizationService', function () {
         expect($route)->toContain('/es/post/123');
     });
 
-    it('generates route without locale segment using query parameter', function () {
+    it('generates route without locale segment using query parameter', function (): void {
         $service = app(LocalizationServiceContract::class);
         $service->setCurrentLocale('en');
 
@@ -68,7 +68,7 @@ describe('LocalizationService', function () {
         expect($route)->toContain('locale=en');
     });
 
-    it('generates route without locale segment with additional params', function () {
+    it('generates route without locale segment with additional params', function (): void {
         $service = app(LocalizationServiceContract::class);
         $service->setCurrentLocale('fr');
 
@@ -78,7 +78,7 @@ describe('LocalizationService', function () {
         expect($route)->toContain('locale=fr');
     });
 
-    it('generates absolute route by default', function () {
+    it('generates absolute route by default', function (): void {
         $service = app(LocalizationServiceContract::class);
         $service->setCurrentLocale('en');
 
@@ -87,7 +87,7 @@ describe('LocalizationService', function () {
         expect($route)->toMatch('/^https?:\/\//');
     });
 
-    it('generates relative route when absolute is false', function () {
+    it('generates relative route when absolute is false', function (): void {
         $service = app(LocalizationServiceContract::class);
         $service->setCurrentLocale('en');
 
@@ -96,7 +96,7 @@ describe('LocalizationService', function () {
         expect($route)->not()->toMatch('/^https?:\/\//');
     });
 
-    it('translates keys using current locale', function () {
+    it('translates keys using current locale', function (): void {
         $service = app(LocalizationServiceContract::class);
         app('translator')->addLines([
             'messages.greeting' => 'Hello World',
@@ -108,7 +108,7 @@ describe('LocalizationService', function () {
         expect($result)->toBe('Hello World');
     });
 
-    it('translates keys with replacements', function () {
+    it('translates keys with replacements', function (): void {
         $service = app(LocalizationServiceContract::class);
         app('translator')->addLines([
             'messages.welcome' => 'Welcome, :name!',
@@ -120,7 +120,7 @@ describe('LocalizationService', function () {
         expect($result)->toBe('Welcome, John!');
     });
 
-    it('translates with specified locale regardless of current locale', function () {
+    it('translates with specified locale regardless of current locale', function (): void {
         $service = app(LocalizationServiceContract::class);
         app('translator')->addLines([
             'messages.hello' => 'Hello',
@@ -135,7 +135,7 @@ describe('LocalizationService', function () {
         expect($service->t('messages.hello', [], 'en'))->toBe('Hello');
     });
 
-    it('handles choice translations correctly', function () {
+    it('handles choice translations correctly', function (): void {
         $service = app(LocalizationServiceContract::class);
         app('translator')->addLines([
             'messages.items' => '{0} No items|{1} One item|[2,*] :count items',
@@ -148,7 +148,7 @@ describe('LocalizationService', function () {
         expect($service->tchoice('messages.items', 5))->toBe('5 items');
     });
 
-    it('handles choice translations with replacements', function () {
+    it('handles choice translations with replacements', function (): void {
         $service = app(LocalizationServiceContract::class);
         app('translator')->addLines([
             'messages.apples' => '{0} No apples|{1} One :fruit|[2,*] :count :fruit',
@@ -162,7 +162,7 @@ describe('LocalizationService', function () {
         expect($result)->toContain('apples');
     });
 
-    it('uses specified locale for choice translations', function () {
+    it('uses specified locale for choice translations', function (): void {
         $service = app(LocalizationServiceContract::class);
         app('translator')->addLines([
             'messages.items' => '{0} No items|{1} One item|[2,*] :count items',
@@ -176,7 +176,7 @@ describe('LocalizationService', function () {
         expect($service->tchoice('messages.items', 1, [], 'es'))->toBe('Un item');
     });
 
-    it('formats numbers as decimal by default', function () {
+    it('formats numbers as decimal by default', function (): void {
         $service = app(LocalizationServiceContract::class);
         $service->setCurrentLocale('en');
 
@@ -186,16 +186,16 @@ describe('LocalizationService', function () {
         expect($result)->toMatch('/1,?234\.56/');
     });
 
-    it('formats numbers with specific decimal places', function () {
+    it('formats numbers with specific decimal places', function (): void {
         $service = app(LocalizationServiceContract::class);
         $service->setCurrentLocale('en');
 
         $result = $service->formatNumber(1234.56789, 1, ['decimals' => 2]);
 
-        expect($result)->toMatch('/1,?234\.5[0-9]/');
+        expect($result)->toMatch('/1,?234\.5\d/');
     });
 
-    it('formats currency numbers', function () {
+    it('formats currency numbers', function (): void {
         $service = app(LocalizationServiceContract::class);
         $service->setCurrentLocale('en');
 
@@ -206,7 +206,7 @@ describe('LocalizationService', function () {
         expect($result)->toMatch('/1,?234\.56/');
     });
 
-    it('formats currency with different currency code', function () {
+    it('formats currency with different currency code', function (): void {
         $service = app(LocalizationServiceContract::class);
         $service->setCurrentLocale('en');
 
@@ -217,7 +217,7 @@ describe('LocalizationService', function () {
         expect($result)->toMatch('/1,?234\.56/');
     });
 
-    it('returns current locale when translating without locale parameter', function () {
+    it('returns current locale when translating without locale parameter', function (): void {
         $service = app(LocalizationServiceContract::class);
         app('translator')->addLines([
             'messages.test' => 'Test EN',
