@@ -38,6 +38,17 @@ php artisan vendor:publish --tag=localization-config
 
 ## Drivers
 
+### PHP Version Support Matrix
+
+| Driver | PHP 8.4 | PHP 8.5 | Per Worker Concurrency Safe |
+|--------|---------|---------|------------------|
+| `native` | ✅ | ✅ | ❌ |
+| `context` | ✅ | ✅ | ❌ |
+| `swoole` | ✅ | ❌ | ✅ |
+| `openswoole` | ✅ | ❌ | ✅ |
+
+> **Note:** Swoole and OpenSwoole do not yet support PHP 8.5. Use `native` or `context` drivers for PHP 8.5 environments.
+
 For a detailed explanation of all available drivers, their concurrency guarantees, and how to implement your own, see the [Drivers Documentation](docs/DRIVERS.md).
 
 ### `config/localization.php`
