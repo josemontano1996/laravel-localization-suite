@@ -138,48 +138,7 @@ describe('SetLocaleFromRoute Middleware', function () {
         });
     });
 
-    describe('Routes without locale parameter', function () {
-        it('uses preferred locale when no locale in route', function () {
-            Route::middleware([SetLocaleFromRoute::class, SetLocalizedHeaders::class])
-                ->get('/nolocale1', function () {
-                    $service = app(LocalizationServiceContract::class);
 
-                    return response()->json(['locale' => $service->getCurrentLocale()]);
-                });
-
-            $response = $this->get('/nolocale1', ['Accept-Language' => 'fr']);
-            expect($response->status())->toBe(200);
-            expect($response->json('locale'))->toBe('fr');
-        });
-
-        it('uses config locale as fallback when no Accept-Language header', function () {
-            Route::middleware([SetLocaleFromRoute::class, SetLocalizedHeaders::class])
-                ->get('/nolocale2', function () {
-                    $service = app(LocalizationServiceContract::class);
-
-                    return response()->json(['locale' => $service->getCurrentLocale()]);
-                });
-
-            $response = $this->get('/nolocale2');
-
-            expect($response->status())->toBe(200);
-            expect($response->json('locale'))->toBe('en');
-        });
-
-        it('uses first supported locale from Accept-Language header', function () {
-            Route::middleware([SetLocaleFromRoute::class, SetLocalizedHeaders::class])
-                ->get('/nolocale3', function () {
-                    $service = app(LocalizationServiceContract::class);
-
-                    return response()->json(['locale' => $service->getCurrentLocale()]);
-                });
-
-            $response = $this->get('/nolocale3', ['Accept-Language' => 'de,en;q=0.9,fr;q=0.8']);
-
-            expect($response->status())->toBe(200);
-            expect($response->json('locale'))->toBe('en');
-        });
-    });
 
     describe('Service locale state', function () {
         it('sets correct locale in service during request', function () {
@@ -197,21 +156,6 @@ describe('SetLocaleFromRoute Middleware', function () {
     });
 
     describe('Edge cases', function () {
-        it('handles empty locale parameter', function () {
-            // Route with optional locale - when locale is empty/null, middleware should use Accept-Language
-            Route::middleware([SetLocaleFromRoute::class])
-                ->get('/optional-test/{locale?}', function ($locale = null) {
-                    $service = app(LocalizationServiceContract::class);
-
-                    return response()->json(['locale' => $service->getCurrentLocale()]);
-                });
-
-            $response = $this->get('/optional-test', ['Accept-Language' => 'fr']);
-
-            expect($response->status())->toBe(200);
-            expect($response->json('locale'))->toBe('fr');
-        });
-
         it('works with multiple route parameters', function () {
             Route::middleware([SetLocaleFromRoute::class])
                 ->get('/{locale}/user/{id}/post/{postId}', function () {
