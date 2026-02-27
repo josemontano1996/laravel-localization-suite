@@ -47,7 +47,8 @@
         "orchestra/testbench": "^10.8",
         "phpstan/phpstan": "^2.1",
         "swoole/ide-helper": "^6.0",
-        "openswoole/ide-helper": "^4.11"
+        "openswoole/ide-helper": "^4.11",
+        "rector/rector": "^2.3"
     },
     "suggest": {
         "ext-swoole": "Install ext-swoole to use the Swoole driver for high-concurrency isolation.",
