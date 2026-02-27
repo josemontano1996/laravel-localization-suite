@@ -1,0 +1,16 @@
+includes:
+    - vendor/larastan/larastan/extension.neon
+
+parameters:
+    paths:
+        - src
+        - config
+        - tests
+
+    level: 5
+
+    scanFiles:
+        - ./vendor/autoload.php
+
+    excludePaths:
+        - tests/Integration/runtimes
