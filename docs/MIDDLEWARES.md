@@ -15,7 +15,10 @@ This middleware is responsible for detecting the locale from the route parameter
 - It reads the route parameter defined in your config (`localization.route_key`, defaults to `locale`).
 - **If the locale is valid and supported:** It sets the current locale using the LocalizationService.
 - **If the locale is present but unsupported:** It intercepts the request, negotiates a fallback locale (based on the request's `Accept-Language` header or your configured default), replaces the invalid segment in the URL, and issues a standard HTTP redirect to the correct localized URL.
-- **If no locale is present:** It negotiates the best locale available for the user and sets it as the active locale.
+
+**Requirements:**
+- Your routes **must define the `{locale}` parameter** (e.g., `/{locale}/about`). This middleware is designed for locale-aware routing with the locale as a URL segment.
+- The middleware negotiates the best locale using the request's `Accept-Language` header and falls back to your configured default locale.
 
 ### 2. `SetLocalizedHeaders`
 **Alias:** `localization.headers`
