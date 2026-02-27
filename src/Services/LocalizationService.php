@@ -52,10 +52,6 @@ final class LocalizationService implements LocalizationServiceContract
             $locale = $this->getConfigLocale();
         }
         $this->localizationDriver->setCurrentLocale($locale);
-
-        if ($this->localizationDriver->isSafeToMutateGlobalState()) {
-            $this->syncGlobalState($locale);
-        }
     }
 
     public function route(BackedEnum|string $name, mixed $parameters = [], bool $absolute = true): string

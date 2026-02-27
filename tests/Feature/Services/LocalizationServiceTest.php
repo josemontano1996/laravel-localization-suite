@@ -219,27 +219,6 @@ describe('LocalizationService', function () {
         expect($result)->toMatch('/1,?234\.56/');
     });
 
-    it('syncs global url state when setting locale', function () {
-        $service = app(LocalizationServiceContract::class);
-        $urlGenerator = app('url');
-
-        $service->setCurrentLocale('fr');
-
-        $defaultLocale = $urlGenerator->getDefaultParameters()['locale'] ?? null;
-
-        expect($defaultLocale)->toBe('fr');
-    });
-
-    it('syncs Carbon global state when setting locale', function () {
-        $service = app(LocalizationServiceContract::class);
-
-        $service->setCurrentLocale('es');
-
-        // Carbon locale should be synced
-        expect(Carbon::getLocale())->toBe('es');
-        expect(CarbonImmutable::getLocale())->toBe('es');
-    });
-
     it('returns current locale when translating without locale parameter', function () {
         $service = app(LocalizationServiceContract::class);
         app('translator')->addLines([
