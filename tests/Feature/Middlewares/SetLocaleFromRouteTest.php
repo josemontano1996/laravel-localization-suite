@@ -138,8 +138,6 @@ describe('SetLocaleFromRoute Middleware', function () {
         });
     });
 
-
-
     describe('Service locale state', function () {
         it('sets correct locale in service during request', function () {
             Route::middleware([SetLocaleFromRoute::class, SetLocalizedHeaders::class])
