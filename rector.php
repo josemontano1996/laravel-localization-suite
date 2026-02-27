@@ -18,8 +18,7 @@ return RectorConfig::configure()
 
     // 1. tell Rector what PHP version we support
     ->withPhpSets(php84: true)                       
-
-    ->withDeadCodeLevel(40)
+    ->withPreparedSets(deadCode: true)
     ->withCodeQualityLevel(40)
     ->withTypeCoverageLevel(40)
 ;
