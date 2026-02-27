@@ -14,11 +14,12 @@ return RectorConfig::configure()
     ])
     ->withSkip([
         __DIR__ . '/tests/Integration/runtimes',
-    ])
+    ])    
 
-    // 1. tell Rector what PHP version we support
-    ->withPhpSets(php84: true)                       
-    ->withPreparedSets(deadCode: true)
-    ->withCodeQualityLevel(40)
-    ->withTypeCoverageLevel(40)
+    ->withSets([
+        SetList::PHP_84,               
+        SetList::CODE_QUALITY,        
+        SetList::DEAD_CODE,           
+        SetList::TYPE_DECLARATION,   
+    ])
 ;
