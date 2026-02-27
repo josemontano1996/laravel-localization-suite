@@ -1,0 +1,15 @@
+<?php
+
+namespace Illuminate\Http;
+
+class Request {
+    public function acceptedLocales(): array {}
+    public function preferredLocale(array $supported = []): ?string {}
+    public function locale(): string {}
+}
+
+namespace Illuminate\Routing;
+
+class Redirector {
+    public function localized(): \Josemontano1996\LaravelLocalizationSuite\Services\RedirectorService {}
+}

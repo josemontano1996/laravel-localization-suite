@@ -18,7 +18,7 @@ class RegisterMacros
         $contract = LocalizationServiceContract::class;
 
         // 1. Redirector macro
-        Redirector::macro('localized', function () use ($contract): \Josemontano1996\LaravelLocalizationSuite\Services\RedirectorService {
+        Redirector::macro('localized', function () use ($contract): RedirectorService {
             /** @var \Illuminate\Routing\Redirector $this */
             return new RedirectorService(
                 $this,
