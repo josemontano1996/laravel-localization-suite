@@ -1,5 +1,3 @@
-name: Tests
-
 on:
   push:
     branches: [main]
@@ -13,30 +11,17 @@ jobs:
       fail-fast: false
       matrix:
         php: ['8.4', '8.5']
-
     name: PHP ${{ matrix.php }}
-
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Setup PHP
-        uses: shivammathur/setup-php@v2
+      - uses: actions/checkout@v4
+      - uses: shivammathur/setup-php@v2
         with:
           php-version: ${{ matrix.php }}
           extensions: dom, curl, libxml, mbstring, zip, pcntl, pdo, sqlite3, pdo_sqlite, bcmath, soap, intl, gd, exif, iconv, imagick, fileinfo
-          coverage: none
-
-      - name: Install dependencies
-        run: composer install --no-interaction --prefer-dist
-      - name: Run rector
-        run: composer rector
-      - name: Run pint
-        run: composer lint
-      - name: composer validate
-        run: composer install --no-interaction --prefer-dist       
-      - name: Run tests
-        run: composer test
+      - run: composer install --no-interaction --prefer-dist
+      - run: composer rector
+      - run: composer lint
+      - run: composer test
 
   integration-tests:
     runs-on: ubuntu-latest
@@ -50,26 +35,23 @@ jobs:
             php: '8.5'
           - runtime: open-swoole-concurrent
             php: '8.5'
-
     name: ${{ matrix.runtime }} (PHP ${{ matrix.php }})
-
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Setup PHP
-        uses: shivammathur/setup-php@v2
+      - uses: actions/checkout@v4
+      - uses: shivammathur/setup-php@v2
         with:
           php-version: ${{ matrix.php }}
-          # Swoole and OpenSwoole cannot be loaded at the same time as they share function names.
           extensions: dom, curl, libxml, mbstring, zip, pcntl, pdo, sqlite3, pdo_sqlite, bcmath, soap, intl, gd, exif, iconv, imagick, fileinfo, ${{ matrix.runtime == 'open-swoole-concurrent' && 'openswoole' || 'swoole' }}
-          coverage: none
-
       - name: Run Integration Test
         working-directory: tests/Integration/runtimes/${{ matrix.runtime }}
-        env:
-          PHP_VERSION: ${{ matrix.php }}
         run: |
           chmod +x test.sh
           ./test.sh
 
+  # This is the "Magic" job you select in GitHub Settings
+  all-tests-passed:
+    name: "Tests"
+    runs-on: ubuntu-latest
+    needs: [test, integration-tests]
+    steps:
+      - run: exit 0
