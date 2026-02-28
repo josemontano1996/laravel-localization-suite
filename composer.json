@@ -1,6 +1,6 @@
 {
     "name": "josemontano1996/laravel-localization-suite",
-    "description": "A comprehensive, runtime-safe localization suite for Laravel 12+, with first-class support for Octane, Swoole, and OpenSwoole concurrency.",
+    "description": "A comprehensive, runtime-safe localization suite for Laravel 12+, with first-class support for Octane, Swoole and OpenSwoole concurrency hooks.",
     "keywords": [
         "laravel",
         "localization",
@@ -30,7 +30,9 @@
     "authors": [
         {
             "name": "Jose Manuel Montano Mengual",
-            "email": "jm3develop@gmail.com"
+            "email": "jm3develop@gmail.com",
+            "homepage": "https://www.linkedin.com/in/josemanuelmontanomengual/",
+            "role": "Creator"
         }
     ],
     "require": {
@@ -50,10 +52,9 @@
         "larastan/larastan": "^3.9"
     },
     "suggest": {
+        "laravel/octane": "Recommended for high-performance concurrency support.",
         "ext-swoole": "Install ext-swoole to use the Swoole driver for high-concurrency isolation.",
-        "ext-openswoole": "Install ext-openswoole to use the OpenSwoole driver for high-concurrency isolation.",
-        "swoole/ide-helper": "IDE helper stubs for Swoole (development only).",
-        "openswoole/ide-helper": "IDE helper stubs for OpenSwoole (development only)."
+        "ext-openswoole": "Install ext-openswoole to use the OpenSwoole driver for high-concurrency isolation."
     },
     "extra": {
         "laravel": {
@@ -68,7 +69,7 @@
     "scripts": {
         "test": "pest",
         "coverage": "pest --coverage",
-        "rector": "rector ",
+        "rector": "rector",
         "lint": "pint --parallel",
         "analyse": "phpstan analyse"
     },
