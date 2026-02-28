@@ -1,6 +1,6 @@
 # Laravel Localization Suite
 
-A comprehensive, runtime safe, localization package for Laravel 12+ with first-class driver support for **Laravel Octane**, **Swoole**, and **OpenSwoole**.
+A comprehensive, runtime safe, localization package for Laravel 12+ with first-class driver support for **Laravel Octane**, **Swoole** and **OpenSwoole** concurrency hooks.
 
 Localize your laravel app without having to worry about the runtime your app will run on, FPM, Octane, or even Octane with Swoole or OpenSwoole asynchronous hooks, just change the localization driver and you will get a worry free localized app.
 
