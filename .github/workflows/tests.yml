@@ -29,9 +29,12 @@ jobs:
 
       - name: Install dependencies
         run: composer install --no-interaction --prefer-dist
-
+      - name: Run rector
+        run: composer rector
+      - name: Run pint
+        run: composer lint       
       - name: Run tests
-        run: vendor/bin/pest
+        run: composer test
 
   integration-tests:
     runs-on: ubuntu-latest
