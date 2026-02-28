@@ -32,7 +32,9 @@ jobs:
       - name: Run rector
         run: composer rector
       - name: Run pint
-        run: composer lint       
+        run: composer lint
+      - name: composer validate
+        run: composer install --no-interaction --prefer-dist       
       - name: Run tests
         run: composer test
 
