@@ -12,7 +12,6 @@ The `LocalizationService` is responsible for:
 - **Route Generation**: Creating locale-aware URLs with proper locale parameters
 - **Translations**: Managing multi-language text using Laravel's translation system
 - **Number Formatting**: Formatting numbers, currencies, and other locale-specific data
-- **Global State Synchronization**: Keeping Carbon dates and URL generators in sync with the current locale
 
 ## Installation & Registration
 
@@ -100,9 +99,6 @@ $service->setCurrentLocale('invalid'); // Falls back to default locale
 **Features:**
 
 - Validates locale against supported locales
-- Syncs Carbon date locale if `isSafeToMutateGlobalState()` returns true
-- Updates URL generator defaults
-
 ### `getConfigLocale(): string`
 
 Gets the application's configured default locale from `config/app.php`.
@@ -471,14 +467,6 @@ enum Language: string
 // Routes can use Backed Enums
 $url = $service->route(Language::English, ['id' => 5]);
 ```
-
-## Global State Synchronization
-
-When you set a new locale, the service automatically syncs:
-
-1. **URL Generator**: Sets the locale as a default route parameter
-2. **Carbon Dates**: Updates Carbon's locale for date formatting
-3. **Driver State**: Stores locale in the active driver
 
 This ensures all parts of your application use the same locale context.
 
