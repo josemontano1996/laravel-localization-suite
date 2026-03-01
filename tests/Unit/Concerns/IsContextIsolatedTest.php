@@ -1,12 +1,12 @@
 <?php
 
 declare(strict_types=1);
-use Josemontano1996\LaravelLocalizationSuite\Drivers\Localization\Concerns\IsContextIsolated;
+use Josemontano1996\LaravelLocalizationSuite\Drivers\Localization\Concerns\IsStatefull;
 
-describe('IsContextIsolated Trait', function (): void {
+describe('IsStatefull Trait', function (): void {
     $makeTraitUser = fn (): object => new class
     {
-        use IsContextIsolated;
+        use IsStatefull;
     };
 
     test('returns false for isSafeToMutateGlobalState', function () use ($makeTraitUser): void {

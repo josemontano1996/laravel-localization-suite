@@ -5,13 +5,13 @@ declare(strict_types=1);
 namespace Josemontano1996\LaravelLocalizationSuite\Drivers\Localization;
 
 use Josemontano1996\LaravelLocalizationSuite\Contracts\LocalizationDriverContract;
-use Josemontano1996\LaravelLocalizationSuite\Drivers\Localization\Concerns\IsContextIsolated;
+use Josemontano1996\LaravelLocalizationSuite\Drivers\Localization\Concerns\IsStatefull;
 use Josemontano1996\LaravelLocalizationSuite\Exceptions\OpenSwooleDriverException;
 use OpenSwoole\Coroutine;
 
 final class OpenSwooleDriver implements LocalizationDriverContract
 {
-    use IsContextIsolated;
+    use IsStatefull;
 
     private const string CONTEXT_KEY = 'localization_locale';
 
