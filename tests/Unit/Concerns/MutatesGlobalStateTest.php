@@ -1,12 +1,12 @@
 <?php
 
 declare(strict_types=1);
-use Josemontano1996\LaravelLocalizationSuite\Drivers\Localization\Concerns\MutatesGlobalState;
+use Josemontano1996\LaravelLocalizationSuite\Drivers\Localization\Concerns\IsStateless;
 
-describe('MutatesGlobalState Trait', function (): void {
+describe('IsStateless Trait', function (): void {
     $makeTraitUser = fn (): object => new class
     {
-        use MutatesGlobalState;
+        use IsStateless;
     };
 
     test('returns true for isSafeToMutateGlobalState', function () use ($makeTraitUser): void {
@@ -20,8 +20,8 @@ describe('MutatesGlobalState Trait', function (): void {
                     <?php
                     require 'vendor/autoload.php';
                     class Tester {
-                        use \Josemontano1996\LaravelLocalizationSuite\Services\Concerns\IsContextIsolated;
-                        use \Josemontano1996\LaravelLocalizationSuite\Services\Concerns\MutatesGlobalState;
+                        use \Josemontano1996\LaravelLocalizationSuite\Services\Concerns\IsStatefull;
+                        use \Josemontano1996\LaravelLocalizationSuite\Services\Concerns\IsStateless;
                     }
                     new Tester();
                     PHP;

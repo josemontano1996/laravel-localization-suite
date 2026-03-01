@@ -327,7 +327,7 @@ class MyCustomDriver implements LocalizationDriverContract
 
     public function isSafeToMutateGlobalState(): bool
     {
-        // Return true if driver allows mutating App locale, Carbon, etc.
+        // Return true if driver environment allows/desires the application to know if it's safe to mutate global state (App locale, Carbon, etc.)
         return false;
     }
 }

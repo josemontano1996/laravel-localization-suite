@@ -20,5 +20,13 @@ interface LocalizationDriverContract
      */
     public function setCurrentLocale(string $locale): void;
 
+    /**
+     * Determine if the driver environment is safe for global state mutations.
+     *
+     * This flag indicates whether the driver is running in an environment where
+     * it is safe to mutate global state like Laravel's app locale or Carbon.
+     *
+     * @return bool
+     */
     public function isSafeToMutateGlobalState(): bool;
 }
